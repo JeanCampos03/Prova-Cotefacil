@@ -1,4 +1,4 @@
-package br.com.cotefacil.prova.exception;
+package br.com.cotefacil.prova.exceptions;
 
 public class UsuarioExistenteException extends RuntimeException {
     public UsuarioExistenteException() {

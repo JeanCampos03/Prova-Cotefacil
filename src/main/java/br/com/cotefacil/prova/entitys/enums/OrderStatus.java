@@ -1,4 +1,4 @@
-package br.com.cotefacil.prova.entitys.orders;
+package br.com.cotefacil.prova.entitys.enums;
 
 public enum OrderStatus {
     PENDING("PENDING"),

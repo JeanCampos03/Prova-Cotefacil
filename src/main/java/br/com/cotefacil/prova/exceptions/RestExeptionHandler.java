@@ -1,4 +1,4 @@
-package br.com.cotefacil.prova.exception;
+package br.com.cotefacil.prova.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

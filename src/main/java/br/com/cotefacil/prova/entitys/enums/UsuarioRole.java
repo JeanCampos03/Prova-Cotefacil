@@ -1,4 +1,4 @@
-package br.com.cotefacil.prova.entitys.users;
+package br.com.cotefacil.prova.entitys.enums;
 
 public enum UsuarioRole {
     USER("USER");

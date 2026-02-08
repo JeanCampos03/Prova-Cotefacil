@@ -1,5 +1,6 @@
 package br.com.cotefacil.prova.entitys.orders;
 
+import br.com.cotefacil.prova.entitys.enums.OrderStatus;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

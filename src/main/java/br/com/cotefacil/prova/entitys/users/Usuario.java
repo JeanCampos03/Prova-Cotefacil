@@ -1,6 +1,7 @@
 package br.com.cotefacil.prova.entitys.users;
 
 
+import br.com.cotefacil.prova.entitys.enums.UsuarioRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

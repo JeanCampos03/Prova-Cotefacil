@@ -1,6 +1,6 @@
 package br.com.cotefacil.prova.config.security;
 
-import br.com.cotefacil.prova.exception.TokenException;
+import br.com.cotefacil.prova.exceptions.TokenException;
 import br.com.cotefacil.prova.services.UsuarioService;
 import br.com.cotefacil.prova.services.authService.TokenService;
 import com.auth0.jwt.exceptions.JWTVerificationException;

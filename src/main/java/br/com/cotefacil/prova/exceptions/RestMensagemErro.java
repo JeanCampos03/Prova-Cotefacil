@@ -1,4 +1,4 @@
-package br.com.cotefacil.prova.exception;
+package br.com.cotefacil.prova.exceptions;
 
 
 import lombok.AllArgsConstructor;
