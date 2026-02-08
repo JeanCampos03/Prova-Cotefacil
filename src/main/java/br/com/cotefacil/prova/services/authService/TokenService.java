@@ -1,5 +1,6 @@
-package br.com.cotefacil.prova.config.security;
+package br.com.cotefacil.prova.services.authService;
 
+import br.com.cotefacil.prova.entitys.users.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -11,36 +12,36 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 @Service
-public class ConfigJWT {
+public class TokenService {
 
-    @Value("${api.security.token.secret}")
-    private String secret;
+    @Value("${api.chave.secreta}")
+    private String chaveSecreta;
 
-    public String criarToken() {
+    public String criarToken(Usuario usuario) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
             return JWT.create()
-                    .withIssuer("auth-api")
-                    .withSubject("colocar user")
+                    .withIssuer("authentication-api")
+                    .withSubject(usuario.getUsername())
                     .withExpiresAt(tempoExpiracao())
                     .sign(algorithm);
         } catch (
                 JWTCreationException exception) {
-            throw new RuntimeException("Erro ao gerar token de autenticação", exception);
+            throw new RuntimeException("Erro ao gerar token", exception);
         }
     }
 
     public String validacaoToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
             return JWT.require(algorithm)
-                    .withIssuer("auth-api")
+                    .withIssuer("authentication-api")
                     .build()
                     .verify(token)
                     .getSubject();
         } catch (
                 JWTCreationException exception) {
-            throw new RuntimeException("Erro ao validar token de autenticação", exception);
+            throw new RuntimeException("Erro na validação do token", exception);
         }
     }
 
