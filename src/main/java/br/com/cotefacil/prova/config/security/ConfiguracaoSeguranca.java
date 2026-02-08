@@ -41,7 +41,7 @@ public class ConfiguracaoSeguranca {
                 .authenticationEntryPoint((request, response, accessDeniedException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
-                    response.getWriter().write("{\"status\":401,\"error\":\"Acesso negado\"}");
+                    response.getWriter().write("{\"status\":401,\"mensagem\":\"Acesso negado\"}");
                 }))
                 .addFilterBefore(filtroAutenticacao, UsernamePasswordAuthenticationFilter.class)
                 .build();

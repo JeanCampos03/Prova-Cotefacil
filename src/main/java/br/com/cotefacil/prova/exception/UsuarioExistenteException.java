@@ -5,7 +5,7 @@ public class UsuarioExistenteException extends RuntimeException {
         super("Username já está em uso");
     }
 
-    public UsuarioExistenteException(String message) {
-        super(message);
+    public UsuarioExistenteException(String mensagem) {
+        super(mensagem);
     }
 }
