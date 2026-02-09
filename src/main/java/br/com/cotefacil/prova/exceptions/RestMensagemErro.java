@@ -1,10 +1,13 @@
 package br.com.cotefacil.prova.exceptions;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -12,7 +15,9 @@ import org.springframework.http.HttpStatus;
 public class RestMensagemErro {
 
     private HttpStatus status;
-    private String mensagem;
+    private Object mensagem;
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime date;
 
 
 }

@@ -1,10 +1,60 @@
 package br.com.cotefacil.prova.controllers;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import br.com.cotefacil.prova.dtos.OrderDTO;
+import br.com.cotefacil.prova.entitys.orders.Order;
+import br.com.cotefacil.prova.services.OrderService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
+@AllArgsConstructor
+@Validated
 public class OrderController {
+
+    private final OrderService orderService;
+
+    // GET /api/orders – Listar todos os pedidos (com paginação)
+    @GetMapping
+    public Page<OrderDTO> listarPedidos(Pageable pageable) {
+        return orderService.listarPedidos(pageable);
+    }
+
+    // GET /api/orders/{id} – Buscar pedido por ID
+    @GetMapping("/{id}")
+    public OrderDTO listarPedidosPorId(@PathVariable @Positive Long id) {
+        return orderService.listarPedidosPorId(id);
+    }
+
+    // POST /api/orders – Criar novo pedido
+    @PostMapping
+    public ResponseEntity<Map<String, String>> salvarPedido(@RequestBody @Valid OrderDTO dto ) {
+        orderService.salvarPedido(dto);
+        Map<String, String> response = Map.of(
+                "mensagem", "Pedido criado com sucesso!"
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    // PUT /api/orders/{id} – Atualizar pedido
+    @PutMapping("/{id}")
+    public void atualizarPedido(@PathVariable Long id) {
+    }
+
+
+    // DELETE /api/orders/{id} – Deletar pedido
+    @DeleteMapping("/{id}")
+    public void deletarPedido(@PathVariable Long id) {
+    }
 
 }

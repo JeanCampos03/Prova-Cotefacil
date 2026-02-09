@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("auth")
 public class AuthController {
@@ -40,7 +43,9 @@ public class AuthController {
             var auth = authenticationManager.authenticate(usernamePassword);
 
             var token = tokenService.criarToken((Usuario) auth.getPrincipal());
-            return ResponseEntity.ok(new LoginResponseDTO(token));
+            ApiResponse responseToken = new ApiResponse<>(200,  new LoginResponseDTO(token), LocalDateTime.now());
+//            return ResponseEntity.ok(new LoginResponseDTO(token));
+            return ResponseEntity.ok(responseToken);
 
         } catch (Exception e) {
             throw new UsuarioNaoEncontradoException();
@@ -56,7 +61,7 @@ public class AuthController {
 
         usuarioService.salvar(new Usuario(dadosRegistro.username(), senhaEncriptada, dadosRegistro.role()));
 
-        ApiResponse<String> response = new ApiResponse<>(200, "Registro realizado com sucesso!");
+        ApiResponse<String> response = new ApiResponse<>(200, "Registro realizado com sucesso!", LocalDateTime.now());
         return ResponseEntity.ok(response);
 
     }
