@@ -1,10 +1,7 @@
-package br.com.cotefacil.prova.dtos;
+package br.com.cotefacil.prova.dtos.order;
 
 import br.com.cotefacil.prova.entitys.orders.OrderItem;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -13,6 +10,7 @@ public record OrderItemDTO(
         Long id,
 
         @NotBlank(message = "Nome do produto é obrigatório")
+        @Size(min = 3, max = 100)
         String productName,
 
         @NotNull(message = "Quantidade é obrigatória")

@@ -1,7 +1,11 @@
 package br.com.cotefacil.prova.controllers;
 
-import br.com.cotefacil.prova.dtos.OrderDTO;
+import br.com.cotefacil.prova.dtos.order.OrderDTO;
+import br.com.cotefacil.prova.dtos.order.OrderItemUpdateDTO;
+import br.com.cotefacil.prova.dtos.order.OrderResponseDTO;
+import br.com.cotefacil.prova.dtos.order.OrderUpdateDTO;
 import br.com.cotefacil.prova.entitys.orders.Order;
+import br.com.cotefacil.prova.exceptions.RestMensagem;
 import br.com.cotefacil.prova.services.OrderService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -13,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -37,18 +41,32 @@ public class OrderController {
 
     // POST /api/orders – Criar novo pedido
     @PostMapping
-    public ResponseEntity<Map<String, String>> salvarPedido(@RequestBody @Valid OrderDTO dto ) {
-        orderService.salvarPedido(dto);
-        Map<String, String> response = Map.of(
-                "mensagem", "Pedido criado com sucesso!"
-        );
+    public ResponseEntity<RestMensagem> salvarPedido(@RequestBody @Valid OrderDTO dto) {
+        Order order = orderService.salvarPedido(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new RestMensagem(HttpStatus.CREATED,
+                        OrderResponseDTO.builder()
+                                .idOrder(order.getId())
+                                .customerEmail(order.getCustomerEmail())
+                                .status(order.getStatus())
+                                .build()
+                        , LocalDateTime.now()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // PUT /api/orders/{id} – Atualizar pedido
     @PutMapping("/{id}")
-    public void atualizarPedido(@PathVariable Long id) {
+    public ResponseEntity<RestMensagem> atualizarPedido(@PathVariable Long id, @RequestBody @Valid OrderUpdateDTO itemDTO) {
+        Order order = orderService.atualizarPedido(id, itemDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new RestMensagem(HttpStatus.OK,
+                        OrderResponseDTO.builder()
+                                .idOrder(order.getId())
+                                .customerEmail(order.getCustomerEmail())
+                                .status(order.getStatus())
+                                .build()
+                        , LocalDateTime.now()));
     }
 
 

@@ -1,9 +1,9 @@
 package br.com.cotefacil.prova.controllers;
 
 import br.com.cotefacil.prova.dtos.ApiResponse;
-import br.com.cotefacil.prova.dtos.AuthDTO;
-import br.com.cotefacil.prova.dtos.LoginResponseDTO;
-import br.com.cotefacil.prova.dtos.RegisterDTO;
+import br.com.cotefacil.prova.dtos.auth.AuthDTO;
+import br.com.cotefacil.prova.dtos.auth.LoginResponseDTO;
+import br.com.cotefacil.prova.dtos.auth.RegisterDTO;
 import br.com.cotefacil.prova.entitys.users.Usuario;
 import br.com.cotefacil.prova.exceptions.UsuarioExistenteException;
 import br.com.cotefacil.prova.exceptions.UsuarioNaoEncontradoException;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController

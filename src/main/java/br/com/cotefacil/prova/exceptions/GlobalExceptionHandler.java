@@ -21,18 +21,18 @@ import java.util.Map;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UsuarioNaoEncontradoException.class)
-    private ResponseEntity<RestMensagemErro> usuarioNaoEncontrado(UsuarioNaoEncontradoException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestMensagemErro(HttpStatus.UNAUTHORIZED, exception.getMessage(), LocalDateTime.now()));
+    private ResponseEntity<RestMensagem> usuarioNaoEncontrado(UsuarioNaoEncontradoException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestMensagem(HttpStatus.UNAUTHORIZED, exception.getMessage(), LocalDateTime.now()));
     }
 
     @ExceptionHandler(TokenException.class)
-    private ResponseEntity<RestMensagemErro> tokenInvalido(TokenException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestMensagemErro(HttpStatus.UNAUTHORIZED, exception.getMessage(), LocalDateTime.now()));
+    private ResponseEntity<RestMensagem> tokenInvalido(TokenException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestMensagem(HttpStatus.UNAUTHORIZED, exception.getMessage(), LocalDateTime.now()));
     }
 
     @ExceptionHandler(UsuarioExistenteException.class)
-    private ResponseEntity<RestMensagemErro> usuarioExistente(UsuarioExistenteException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestMensagemErro(HttpStatus.BAD_REQUEST, exception.getMessage(), LocalDateTime.now()));
+    private ResponseEntity<RestMensagem> usuarioExistente(UsuarioExistenteException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestMensagem(HttpStatus.BAD_REQUEST, exception.getMessage(), LocalDateTime.now()));
     }
 
     @Override
@@ -40,27 +40,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, String> erros = new HashMap<>();
         exception.getBindingResult().getFieldErrors()
                 .forEach(e -> erros.put(e.getField(), e.getDefaultMessage()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestMensagemErro(HttpStatus.BAD_REQUEST, erros, LocalDateTime.now()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestMensagem(HttpStatus.BAD_REQUEST, erros, LocalDateTime.now()));
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<RestMensagemErro> handleNaoEncontrado(NotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestMensagemErro(HttpStatus.NOT_FOUND, exception.getMessage(), LocalDateTime.now()));
+    public ResponseEntity<RestMensagem> handleNaoEncontrado(NotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestMensagem(HttpStatus.NOT_FOUND, exception.getMessage(), LocalDateTime.now()));
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<RestMensagemErro> handleTipoInvalido(MethodArgumentTypeMismatchException exception) {
-        return ResponseEntity.badRequest().body(new RestMensagemErro(HttpStatus.BAD_REQUEST, "Tipos inválidos na requisição.", LocalDateTime.now()));
+    public ResponseEntity<RestMensagem> handleTipoInvalido(MethodArgumentTypeMismatchException exception) {
+        return ResponseEntity.badRequest().body(new RestMensagem(HttpStatus.BAD_REQUEST, "Tipos inválidos na requisição.", LocalDateTime.now()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<RestMensagemErro> handleDadoInvalido(ConstraintViolationException exception) {
-        return ResponseEntity.badRequest().body(new RestMensagemErro(HttpStatus.BAD_REQUEST, "Dados inválidos na requisição.", LocalDateTime.now()));
+    public ResponseEntity<RestMensagem> handleDadoInvalido(ConstraintViolationException exception) {
+        return ResponseEntity.badRequest().body(new RestMensagem(HttpStatus.BAD_REQUEST, "Dados inválidos na requisição.", LocalDateTime.now()));
     }
 
     @Override
     protected ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException exception, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestMensagemErro(HttpStatus.NOT_FOUND, "Endpoint incorreto.", LocalDateTime.now()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new RestMensagem(HttpStatus.NOT_FOUND, "Endpoint incorreto.", LocalDateTime.now()));
     }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<RestMensagem> handleBusinessException(BusinessException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new RestMensagem(HttpStatus.CONFLICT,exception.getMessage(),LocalDateTime.now()));
+    }
+
 
 }

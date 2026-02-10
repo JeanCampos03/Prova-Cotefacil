@@ -12,13 +12,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RestMensagemErro {
+public class RestMensagem {
 
     private HttpStatus status;
+
     private Object mensagem;
+
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime date;
-
 
 }
 

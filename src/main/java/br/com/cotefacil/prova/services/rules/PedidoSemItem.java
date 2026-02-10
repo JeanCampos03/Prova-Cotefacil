@@ -1,6 +1,6 @@
 package br.com.cotefacil.prova.services.rules;
 
-import br.com.cotefacil.prova.dtos.OrderDTO;
+import br.com.cotefacil.prova.dtos.order.OrderDTO;
 import br.com.cotefacil.prova.exceptions.BusinessException;
 import org.springframework.stereotype.Component;
 

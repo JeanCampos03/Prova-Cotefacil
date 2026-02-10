@@ -1,4 +1,4 @@
-package br.com.cotefacil.prova.dtos;
+package br.com.cotefacil.prova.dtos.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
