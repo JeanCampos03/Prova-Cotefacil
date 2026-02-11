@@ -1,6 +1,5 @@
 package br.com.cotefacil.prova.dtos.order;
 
-import br.com.cotefacil.prova.entitys.orders.OrderItem;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 

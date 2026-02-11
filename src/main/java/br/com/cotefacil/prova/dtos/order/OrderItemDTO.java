@@ -6,8 +6,6 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
 public record OrderItemDTO(
-
-        @NotNull(message = "O itemId é obrigatório")
         Long id,
 
         @NotBlank(message = "Nome do produto é obrigatório")
