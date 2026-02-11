@@ -33,8 +33,12 @@ public class ConfiguracaoSeguranca {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/login","/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html" ).permitAll()
                         .anyRequest().authenticated()
+
+
 
                 )
                 .exceptionHandling(ex -> ex
