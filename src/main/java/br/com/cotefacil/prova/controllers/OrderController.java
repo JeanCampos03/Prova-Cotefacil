@@ -72,7 +72,9 @@ public class OrderController {
 
     // DELETE /api/orders/{id} – Deletar pedido
     @DeleteMapping("/{id}")
-    public void deletarPedido(@PathVariable Long id) {
+    public ResponseEntity<RestMensagem> deletarPedido(@PathVariable Long id) {
+        orderService.excluirPedido(id);
+        return ResponseEntity.status(HttpStatus.OK).body(new RestMensagem(HttpStatus.NO_CONTENT, "Pedido ID '" + id + "' excluído com sucesso",LocalDateTime.now()));
     }
 
 }

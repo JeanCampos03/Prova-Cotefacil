@@ -28,27 +28,9 @@ public class OrderService {
 
     public Page<OrderDTO> listarPedidos(@PageableDefault(page = 0, size = 10) Pageable pageable) {
 
-        Page<Order> page = orderRepository.findAll(pageable);
+        Page<Order> page = orderRepository.findAllByStatusNot(OrderStatus.CANCELLED ,pageable);
 
-        return page.map(order ->
-                new OrderDTO(
-                        order.getId(),
-                        order.getCustomerName(),
-                        order.getCustomerEmail(),
-                        order.getOrderDate(),
-                        order.getStatus(),
-                        order.getTotalAmount(),
-                        order.getItems().stream()
-                                .map(i -> new OrderItemDTO(
-                                        i.getId(),
-                                        i.getProductName(),
-                                        i.getQuantity(),
-                                        i.getUnitPrice(),
-                                        i.getSubtotal()
-                                ))
-                                .toList()
-                )
-        );
+        return page.map(OrderDTO::fromEntity);
     }
 
     public OrderDTO listarPedidosPorId(Long id) {
@@ -120,7 +102,7 @@ public class OrderService {
                 OrderItem item = order.getItems().stream()
                         .filter(i -> i.getId().equals(itemDTO.itemId()))
                         .findFirst()
-                        .orElseThrow(() -> new BusinessException("Item não encontrado"));
+                        .orElseThrow(() -> new BusinessException("Coloque um itemId valido"));
 
                 if (itemDTO.productName() != null) {
                     item.setProductName(itemDTO.productName());
@@ -157,6 +139,18 @@ public class OrderService {
                     "Status não pode retroceder de " + atual + " para " + novo
             );
         }
+    }
+
+    @Transactional
+    public void excluirPedido(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+
+        if (order.getStatus() == OrderStatus.DELIVERED) {
+            throw new BusinessException("Pedido já foi entregue, não pode ser excluido");
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
     }
 
 
