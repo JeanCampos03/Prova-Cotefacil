@@ -9,6 +9,8 @@ import br.com.cotefacil.prova.exceptions.UsuarioExistenteException;
 import br.com.cotefacil.prova.exceptions.UsuarioNaoEncontradoException;
 import br.com.cotefacil.prova.services.UsuarioService;
 import br.com.cotefacil.prova.services.authService.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("auth")
+@Tag(name = "Autenticação")
 public class AuthController {
 
     @Autowired
@@ -36,6 +39,7 @@ public class AuthController {
     TokenService tokenService;
 
     @PostMapping("/login")
+    @Operation(summary = "Gerar Token de autentição")
     public ResponseEntity login(@RequestBody @Valid AuthDTO dadosLogin) {
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(dadosLogin.username(), dadosLogin.password());
@@ -52,6 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Gerar novo login")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO dadosRegistro) {
 
         if (usuarioService.existeUsuario(dadosRegistro.username())) throw new UsuarioExistenteException();

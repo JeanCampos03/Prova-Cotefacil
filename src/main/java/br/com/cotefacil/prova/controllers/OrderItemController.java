@@ -8,6 +8,8 @@ import br.com.cotefacil.prova.exceptions.NotFoundException;
 import br.com.cotefacil.prova.exceptions.RestMensagem;
 import br.com.cotefacil.prova.services.OrderItemService;
 import br.com.cotefacil.prova.services.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/orders")
 @AllArgsConstructor
 @Validated
+@Tag(name= "Items do pedido")
 public class OrderItemController {
 
     private final OrderItemService orderItemService;
@@ -31,6 +34,7 @@ public class OrderItemController {
 
     // GET /api/orders/{id}/items – Listar itens de um pedido
     @GetMapping("/{id}/items")
+    @Operation(summary = "Listar produtos do pedido")
     public ResponseEntity<RestMensagem> listarItensPedido(@PathVariable Long id) {
         List<OrderItemDTO> itens =
                 orderItemService.buscarItensPorPedido(id);
@@ -40,6 +44,7 @@ public class OrderItemController {
 
     // POST /api/orders/{id}/items – Adicionar item ao pedido
     @PostMapping("/{id}/items")
+    @Operation(summary = "Adicionar produtos ao pedido")
     public ResponseEntity<RestMensagem> adicionarItemPedido(@RequestBody @Valid List< @Valid OrderItemUpdateDTO> orderItemUpdateDTO, @PathVariable Long id) {
         List<OrderItemDTO> itensCriados = orderItemService.adiconaItemPedido(orderItemUpdateDTO, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(new RestMensagem(HttpStatus.CREATED, itensCriados, LocalDateTime.now()));

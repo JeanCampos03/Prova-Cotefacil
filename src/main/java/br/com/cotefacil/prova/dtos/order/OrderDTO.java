@@ -3,6 +3,8 @@ package br.com.cotefacil.prova.dtos.order;
 import br.com.cotefacil.prova.entitys.enums.OrderStatus;
 import br.com.cotefacil.prova.entitys.orders.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
@@ -13,20 +15,17 @@ import java.util.List;
 
 @Builder
 public record OrderDTO(
-        Long id,
 
+        @Schema(example = "Maria Silva")
         @NotBlank(message = "Nome do cliente é obrigatório")
         String customerName,
 
+        @Schema(example = "maria.silva@email.com")
         @Email(message = "Email inválido")
         @NotBlank(message = "Email é obrigatório")
         String customerEmail,
 
-        @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-        LocalDateTime orderDate,
-
-        OrderStatus status,
-
+        @JsonIgnore
         BigDecimal totalAmount,
 
         @NotEmpty(message = "O pedido deve conter ao menos um item")
@@ -35,11 +34,8 @@ public record OrderDTO(
 ) {
     public static OrderDTO fromEntity(Order order) {
         return new OrderDTO(
-                order.getId(),
                 order.getCustomerName(),
                 order.getCustomerEmail(),
-                order.getOrderDate(),
-                order.getStatus(),
                 order.getTotalAmount(),
                 order.getItems().stream()
                         .map(OrderItemDTO::fromEntity)
