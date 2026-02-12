@@ -5,9 +5,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class AuthService implements UserDetailsService {
+
     private final UsuarioRepository usuarioRepository;
 
     public AuthService(UsuarioRepository usuarioRepository) {
@@ -16,6 +19,15 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByUsername(username);
+
+        log.info("[AUTH] Tentativa de login username={}", username);
+
+        UserDetails user = usuarioRepository.findByUsername(username);
+
+        if (user == null) {
+            log.warn("[AUTH] Usuário não encontrado username={}", username);
+        }
+
+        return user;
     }
 }
