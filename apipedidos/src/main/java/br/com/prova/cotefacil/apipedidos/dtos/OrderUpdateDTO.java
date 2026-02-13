@@ -1,6 +1,6 @@
-package br.com.prova.cotefacil.api2.dtos;
+package br.com.prova.cotefacil.apipedidos.dtos;
 
-import br.com.prova.cotefacil.api2.entitys.enums.OrderStatus;
+import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 

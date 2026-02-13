@@ -1,6 +1,7 @@
-package br.com.cotefacil.prova.entitys.orders;
+package br.com.prova.cotefacil.apipedidos.entitys.orders;
 
-import br.com.cotefacil.prova.entitys.enums.OrderStatus;
+import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,9 @@ public class Order {
     @Column(name = "total_amount", nullable = false, precision = 8, scale = 2)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal totalAmount;
+
+    @Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
 
     public void addItem(OrderItem item) {
         items.add(item);

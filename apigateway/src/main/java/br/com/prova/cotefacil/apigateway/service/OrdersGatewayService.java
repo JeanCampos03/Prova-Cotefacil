@@ -1,35 +1,30 @@
-package br.com.prova.cotefacil.api1.controller;
+package br.com.prova.cotefacil.apigateway.service;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.Enumeration;
 
-/**
- * Gateway que encaminha requisições /api/orders/** para a API 2 (CRUD de Pedidos).
- * Inclui o token JWT no header Authorization ao encaminhar.
- * Oculto do Swagger da API 1: use o Swagger da API 2 para documentação de pedidos.
- */
-@Hidden
-@RestController
-@RequestMapping("/api/orders")
-public class OrdersGatewayController {
+@Service
+public class OrdersGatewayService {
 
-    @Autowired
-    private RestTemplate restTemplate;
+
+    private final RestTemplate restTemplate;
 
     @Value("${api2.url:http://localhost:8082}")
     private String api2BaseUrl;
 
-    @RequestMapping(value = { "", "/", "/**" }, method = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.PATCH })
-    public ResponseEntity<?> proxyRequest(HttpServletRequest request, @RequestBody(required = false) String body) {
+    public OrdersGatewayService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public ResponseEntity<String> proxyToApiPedidos(HttpServletRequest request, String body) {
         String path = extractPath(request);
         String queryString = request.getQueryString() != null ? "?" + request.getQueryString() : "";
         String targetUrl = api2BaseUrl + "/api/orders" + path + queryString;
@@ -54,7 +49,6 @@ public class OrdersGatewayController {
                     .headers(response.getHeaders())
                     .body(response.getBody());
         } catch (HttpStatusCodeException e) {
-            // Repassa status e corpo da resposta de erro da API 2 (4xx/5xx)
             String bodyReturn = e.getResponseBodyAsString();
             return ResponseEntity.status(e.getStatusCode())
                     .headers(e.getResponseHeaders())
@@ -80,7 +74,8 @@ public class OrdersGatewayController {
         if (headerNames != null) {
             while (headerNames.hasMoreElements()) {
                 String name = headerNames.nextElement();
-                if (!name.equalsIgnoreCase(HttpHeaders.AUTHORIZATION) && !name.equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH)) {
+                if (!name.equalsIgnoreCase(HttpHeaders.AUTHORIZATION) &&
+                        !name.equalsIgnoreCase(HttpHeaders.CONTENT_LENGTH)) {
                     headers.addAll(name, Collections.list(request.getHeaders(name)));
                 }
             }

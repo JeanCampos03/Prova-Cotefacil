@@ -1,7 +1,7 @@
-package br.com.prova.cotefacil.api1.security;
+package br.com.prova.cotefacil.apigateway.security;
 
 
-import br.com.prova.cotefacil.api1.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.entity.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class TokenService {
@@ -47,7 +46,7 @@ public class TokenService {
     }
 
     private Instant tempoExpiracao() {
-        return LocalDateTime.now().plusHours(1).toInstant(ZoneOffset.of("-03:00"));
+        return Instant.now().plus(1, ChronoUnit.HOURS);
     }
 
 }

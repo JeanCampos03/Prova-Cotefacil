@@ -1,6 +1,5 @@
-package br.com.prova.cotefacil.api2.dtos;
+package br.com.prova.cotefacil.apipedidos.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;

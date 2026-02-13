@@ -1,15 +1,18 @@
-package br.com.prova.cotefacil.api2.services;
+package br.com.prova.cotefacil.apipedidos.services;
 
-import br.com.prova.cotefacil.api2.dtos.OrderDTO;
-import br.com.prova.cotefacil.api2.dtos.OrderItemDTO;
-import br.com.prova.cotefacil.api2.dtos.OrderItemUpdateDTO;
-import br.com.prova.cotefacil.api2.dtos.OrderUpdateDTO;
-import br.com.prova.cotefacil.api2.entitys.enums.OrderStatus;
-import br.com.prova.cotefacil.api2.entitys.orders.Order;
-import br.com.prova.cotefacil.api2.entitys.orders.OrderItem;
-import br.com.prova.cotefacil.api2.exceptions.BusinessException;
-import br.com.prova.cotefacil.api2.exceptions.NotFoundException;
-import br.com.prova.cotefacil.api2.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.service.UsuarioService;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderDTO;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderItemDTO;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderItemUpdateDTO;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderUpdateDTO;
+import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
+import br.com.prova.cotefacil.apipedidos.entitys.orders.Order;
+import br.com.prova.cotefacil.apipedidos.entitys.orders.OrderItem;
+import br.com.prova.cotefacil.apipedidos.exceptions.BusinessException;
+import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
+import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,23 +30,23 @@ import java.time.LocalDateTime;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final SecurityUtils securityUtils;
 
     public Page<OrderDTO> listarPedidos(@PageableDefault(page = 0, size = 10) Pageable pageable) {
-
+        String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Listando pedidos - page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
-
-        Page<Order> page = orderRepository.findAllByStatusNot(OrderStatus.CANCELLED ,pageable);
-
+        Page<Order> page = orderRepository.findAllByStatusNotAndCreatedBy(OrderStatus.CANCELLED ,pageable, username);
         log.info("[ORDER] Total encontrados: {}", page.getTotalElements());
-
         return page.map(OrderDTO::fromEntity);
     }
 
     public OrderDTO listarPedidosPorId(Long id) {
 
+        String username = securityUtils.getCurrentUsername();
+
         log.info("[ORDER] Buscando pedido por id={}", id);
 
-        Order order = orderRepository.findById(id)
+        Order order = orderRepository.findByIdAndCreatedBy(id, username)
                 .orElseThrow(() -> {
                     log.warn("[ORDER] Pedido não encontrado id={}", id);
                     return new NotFoundException();
@@ -53,8 +56,9 @@ public class OrderService {
     }
 
     @Transactional
-    public Order salvarPedido(OrderDTO dto) {
+    public OrderDTO salvarPedido(OrderDTO dto) {
 
+        String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Criando pedido cliente={}", dto.customerName());
 
         Order order = new Order();
@@ -63,6 +67,7 @@ public class OrderService {
         order.setTotalAmount(BigDecimal.ZERO);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
+        order.setCreatedBy(username);
 
 
         BigDecimal total = BigDecimal.ZERO;
@@ -94,18 +99,18 @@ public class OrderService {
 
         log.info("[ORDER] Pedido salvo com sucesso");
 
-        return order;
+        return OrderDTO.fromEntity(order);
     }
 
     @Transactional
-    public Order atualizarPedido(Long id, OrderUpdateDTO dto) {
-
+    public OrderDTO atualizarPedido(Long id, OrderUpdateDTO dto) {
+        String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Atualizando pedido id={}", id);
 
-        Order order = orderRepository.findById(id)
+        Order order = orderRepository.findByIdAndCreatedBy(id, username)
                 .orElseThrow(() -> {
                     log.warn("[ORDER] Pedido não encontrado id={}", id);
-                    return new NotFoundException();
+                    return new BusinessException("Pedido não encontrado");
                 });
 
         if (order.getStatus() == OrderStatus.DELIVERED ||
@@ -117,7 +122,7 @@ public class OrderService {
 
         if (dto.status() != null) {
             log.info("[ORDER] Alterando status {} -> {}", order.getStatus(), dto.status());
-            validarTransicaoStatus(order.getStatus(), dto.status());
+            validateStatusTransition(order.getStatus(), dto.status());
             order.setStatus(dto.status());
         }
 
@@ -160,29 +165,20 @@ public class OrderService {
             }
         }
 
-        return order;
-    }
-
-    private void validarTransicaoStatus(OrderStatus atual, OrderStatus novo) {
-
-        if (novo == null) return;
-
-        if (novo.ordinal() < atual.ordinal()) {
-            log.warn("[ORDER] Tentativa de retroceder status {} -> {}", atual, novo);
-            throw new BusinessException(
-                    "Status não pode retroceder de " + atual + " para " + novo
-            );
-        }
+        return OrderDTO.fromEntity(order);
     }
 
     @Transactional
     public void excluirPedido(Long orderId) {
-
+        String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Cancelando pedido id={}", orderId);
 
-        Order order = orderRepository.findById(orderId)
+
+
+        Order order = orderRepository.findByIdAndCreatedBy(orderId, username)
                 .orElseThrow(() -> {
-                    log.warn("[ORDER] Pedido não encontrado id={}", orderId);
+                    log.warn("[ORDER] Pedido não encontrado ou acesso negado id={}, user={}",
+                            orderId, username);
                     return new NotFoundException("Pedido não encontrado");
                 });
 
@@ -193,6 +189,24 @@ public class OrderService {
 
         order.setStatus(OrderStatus.CANCELLED);
 
+
         log.info("[ORDER] Pedido cancelado id={}", orderId);
     }
+
+    private void validateStatusTransition(OrderStatus atual, OrderStatus novo) {
+        if (novo == null) return;
+
+        if (!atual.canTransitionTo(novo)) {
+            log.warn("[ORDER] Transição inválida {} -> {}", atual, novo);
+            throw new BusinessException(
+                    String.format(
+                            "Transição de status inválida de %s para %s. Status possíveis: %s",
+                            atual,
+                            novo,
+                            atual.getNextPossibleStatuses()
+                    )
+            );
+        }
+    }
+
 }

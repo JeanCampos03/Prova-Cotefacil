@@ -1,6 +1,6 @@
-package br.com.cotefacil.prova.dtos.order;
+package br.com.prova.cotefacil.apipedidos.dtos;
 
-import br.com.cotefacil.prova.entitys.enums.OrderStatus;
+import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
 import lombok.Builder;
 
 @Builder

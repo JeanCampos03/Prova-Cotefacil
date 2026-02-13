@@ -1,10 +1,10 @@
-package br.com.prova.cotefacil.api2.controllers;
+package br.com.prova.cotefacil.apipedidos.controllers;
 
-import br.com.prova.cotefacil.api2.dtos.OrderItemDTO;
-import br.com.prova.cotefacil.api2.dtos.OrderItemUpdateDTO;
-import br.com.prova.cotefacil.api2.exceptions.RestMensagem;
-import br.com.prova.cotefacil.api2.services.OrderItemService;
-import br.com.prova.cotefacil.api2.services.OrderService;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderItemDTO;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderItemUpdateDTO;
+import br.com.prova.cotefacil.apipedidos.exceptions.RestMensage;
+import br.com.prova.cotefacil.apipedidos.services.OrderItemService;
+import br.com.prova.cotefacil.apipedidos.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,18 +32,17 @@ public class OrderItemController {
     // GET /api/orders/{id}/items – Listar itens de um pedido
     @GetMapping("/{id}/items")
     @Operation(summary = "Listar produtos do pedido")
-    public ResponseEntity<RestMensagem> listarItensPedido(@PathVariable Long id) {
-        List<OrderItemDTO> itens =
-                orderItemService.buscarItensPorPedido(id);
-        return ResponseEntity.ok(new RestMensagem(HttpStatus.OK, itens, LocalDateTime.now()));
+    public ResponseEntity<RestMensage> listarItensPedido(@PathVariable Long id) {
+        List<OrderItemDTO> itens = orderItemService.buscarItensPorPedido(id);
+        return ResponseEntity.ok(new RestMensage(HttpStatus.OK, itens, LocalDateTime.now()));
     }
 
 
     // POST /api/orders/{id}/items – Adicionar item ao pedido
     @PostMapping("/{id}/items")
     @Operation(summary = "Adicionar produtos ao pedido")
-    public ResponseEntity<RestMensagem> adicionarItemPedido(@RequestBody @Valid List< @Valid OrderItemUpdateDTO> orderItemUpdateDTO, @PathVariable Long id) {
+    public ResponseEntity<RestMensage> adicionarItemPedido(@RequestBody @Valid List< @Valid OrderItemUpdateDTO> orderItemUpdateDTO, @PathVariable Long id) {
         List<OrderItemDTO> itensCriados = orderItemService.adicionaItemPedido(orderItemUpdateDTO, id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new RestMensagem(HttpStatus.CREATED, itensCriados, LocalDateTime.now()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new RestMensage(HttpStatus.CREATED, itensCriados, LocalDateTime.now()));
     }
 }

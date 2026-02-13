@@ -1,4 +1,4 @@
-package br.com.prova.cotefacil.api2.services.authService;
+package br.com.prova.cotefacil.apipedidos.services.authService;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,7 +16,6 @@ public class TokenService {
     @Value("${api.chave.secreta}")
     private String chaveSecreta;
 
-    /** Valida o JWT emitido pela API 1 (gateway) e retorna o username (subject). */
     public String validacaoToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
@@ -26,11 +25,11 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("Token inválido ou expirado", e);
+            throw new RuntimeException("Invalid or expired token", e);
         }
     }
 
-    /** Gera token a partir do username (uso em testes; em produção o token vem da API 1). */
+
     public String criarToken(String username) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
@@ -40,7 +39,7 @@ public class TokenService {
                     .withExpiresAt(LocalDateTime.now().plusHours(1).toInstant(ZoneOffset.of("-03:00")))
                     .sign(algorithm);
         } catch (JWTCreationException e) {
-            throw new RuntimeException("Erro ao gerar token", e);
+            throw new RuntimeException("Error generating token", e);
         }
     }
 }

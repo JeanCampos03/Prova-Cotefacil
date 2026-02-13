@@ -1,11 +1,13 @@
-package br.com.prova.cotefacil.api2.services;
+package br.com.prova.cotefacil.apipedidos.services;
 
-import br.com.prova.cotefacil.api2.dtos.OrderItemDTO;
-import br.com.prova.cotefacil.api2.dtos.OrderItemUpdateDTO;
-import br.com.prova.cotefacil.api2.entitys.orders.Order;
-import br.com.prova.cotefacil.api2.entitys.orders.OrderItem;
-import br.com.prova.cotefacil.api2.exceptions.NotFoundException;
-import br.com.prova.cotefacil.api2.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apigateway.service.UsuarioService;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderItemDTO;
+import br.com.prova.cotefacil.apipedidos.dtos.OrderItemUpdateDTO;
+import br.com.prova.cotefacil.apipedidos.entitys.orders.Order;
+import br.com.prova.cotefacil.apipedidos.entitys.orders.OrderItem;
+import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
+import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,15 +22,18 @@ import java.util.List;
 public class OrderItemService {
 
     private final OrderRepository orderRepository;
+    private final SecurityUtils securityUtils;
 
     @Transactional(readOnly = true)
     public List<OrderItemDTO> buscarItensPorPedido(Long orderId) {
+        String username = securityUtils.getCurrentUsername();
 
         log.info("[ORDER-ITEM] Buscando itens do pedido id={}", orderId);
 
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findByIdAndCreatedBy(orderId, username)
                 .orElseThrow(() -> {
-                    log.warn("[ORDER-ITEM] Pedido não encontrado id={}", orderId);
+                    log.warn("[ORDER-ITEM] Pedido não encontrado ou acesso negado id={}, user={}",
+                            orderId, username);
                     return new NotFoundException("Pedido não encontrado");
                 });
 
@@ -39,10 +44,10 @@ public class OrderItemService {
 
     @Transactional
     public List<OrderItemDTO> adicionaItemPedido(List<OrderItemUpdateDTO> orderItemUpdateDTO, Long id) {
-
+        String username = securityUtils.getCurrentUsername();
         log.info("[ORDER-ITEM] Adicionando itens ao pedido id={}", id);
 
-        Order order = orderRepository.findById(id)
+        Order order = orderRepository.findByIdAndCreatedBy(id, username)
                 .orElseThrow(() -> {
                     log.warn("[ORDER-ITEM] Pedido não encontrado id={}", id);
                     return new NotFoundException("Pedido não encontrado");

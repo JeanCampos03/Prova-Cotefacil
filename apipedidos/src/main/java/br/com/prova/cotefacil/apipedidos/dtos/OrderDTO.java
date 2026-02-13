@@ -1,6 +1,6 @@
-package br.com.prova.cotefacil.api2.dtos;
+package br.com.prova.cotefacil.apipedidos.dtos;
 
-import br.com.prova.cotefacil.api2.entitys.orders.Order;
+import br.com.prova.cotefacil.apipedidos.entitys.orders.Order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +30,9 @@ public record OrderDTO(
 
         @NotEmpty(message = "O pedido deve conter ao menos um item")
         @Valid
-        List<OrderItemDTO> items
+        List<OrderItemDTO> items,
+
+        String createdBy
 ) {
     public static OrderDTO fromEntity(Order order) {
         return new OrderDTO(
@@ -40,7 +42,8 @@ public record OrderDTO(
                 order.getTotalAmount(),
                 order.getItems().stream()
                         .map(OrderItemDTO::fromEntity)
-                        .toList()
+                        .toList(),
+                order.getCreatedBy()
         );
     }
 }
