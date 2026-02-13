@@ -104,7 +104,7 @@ class OrderItemServiceTest {
         when(orderRepository.save(any(Order.class))).thenReturn(order);
 
         // Act
-        List<OrderItemDTO> result = orderItemService.adiconaItemPedido(
+        List<OrderItemDTO> result = orderItemService.adicionaItemPedido(
             List.of(novoItem), 1L
         );
 
