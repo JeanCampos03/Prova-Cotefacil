@@ -19,8 +19,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>api1</module>
-        <module>api2</module>
+        <module>apigateway</module>
+        <module>apipedidos</module>
     </modules>
 
 </project>
