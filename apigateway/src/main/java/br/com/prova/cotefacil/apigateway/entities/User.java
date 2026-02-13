@@ -20,9 +20,9 @@ import java.util.List;
 @Setter
 @Table(name = "usuarios")
 @Builder
-public class Usuario implements UserDetails {
+public class User implements UserDetails {
 
-    public Usuario(String username, String password, UsuarioRole role) {
+    public User(String username, String password, UsuarioRole role) {
         this.username = username;
         this.role = role;
         this.password = password;

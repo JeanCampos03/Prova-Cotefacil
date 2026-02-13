@@ -1,8 +1,8 @@
 package br.com.prova.cotefacil.apigateway.service;
 
 
-import br.com.prova.cotefacil.apigateway.entities.Usuario;
-import br.com.prova.cotefacil.apigateway.repository.UsuarioRepository;
+import br.com.prova.cotefacil.apigateway.entities.User;
+import br.com.prova.cotefacil.apigateway.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,33 +12,33 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UsuarioService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UserRepository userRepository;
 
 
     public boolean existeUsuario(String username) {
-        return usuarioRepository.existsByUsername(username);
+        return userRepository.existsByUsername(username);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
     }
 
     // Retorna o usuário logado com base no JWT
-    public Usuario getUsuarioLogado() {
+    public User getUsuarioLogado() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             return null;
         }
 
         Object principal = auth.getPrincipal();
-        if (principal instanceof Usuario usuario) {
-            return usuario;
+        if (principal instanceof User user) {
+            return user;
         } else if (principal instanceof UserDetails userDetails) {
-            return usuarioRepository.findByUsername(userDetails.getUsername())
+            return userRepository.findByUsername(userDetails.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
         }
 
@@ -49,7 +49,7 @@ public class UsuarioService implements UserDetailsService {
         return loadUserByUsername(username);
     }
 
-    public void salvar(Usuario usuario) {
-        usuarioRepository.save(usuario);
+    public void salvar(User user) {
+        userRepository.save(user);
     }
 }

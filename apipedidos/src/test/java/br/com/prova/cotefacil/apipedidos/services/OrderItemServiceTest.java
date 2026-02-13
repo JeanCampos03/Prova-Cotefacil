@@ -6,7 +6,7 @@ import br.com.prova.cotefacil.apipedidos.entities.enums.OrderStatus;
 import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import br.com.prova.cotefacil.apipedidos.entities.orders.OrderItem;
 import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
-import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.repository.OrderRepository;
 import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,7 +77,7 @@ class OrderItemServiceTest {
                 .thenReturn(Optional.of(order));
 
         List<OrderItemDTO> result =
-                orderItemService.buscarItensPorPedido(1L);
+                orderItemService.getOrderItemById(1L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -95,7 +95,7 @@ class OrderItemServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () ->
-                orderItemService.buscarItensPorPedido(999L)
+                orderItemService.getOrderItemById(999L)
         );
 
         verify(orderRepository, times(1))
@@ -120,7 +120,7 @@ class OrderItemServiceTest {
                 .thenReturn(order);
 
         List<OrderItemDTO> result =
-                orderItemService.adicionaItemPedido(
+                orderItemService.addOrderItem(
                         List.of(novoItem), 1L
                 );
 

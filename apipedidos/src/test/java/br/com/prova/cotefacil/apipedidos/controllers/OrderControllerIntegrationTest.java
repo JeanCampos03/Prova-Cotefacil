@@ -1,10 +1,9 @@
 package br.com.prova.cotefacil.apipedidos.controllers;
 
-import br.com.prova.cotefacil.apigateway.service.UsuarioService;
 import br.com.prova.cotefacil.apipedidos.entities.enums.OrderStatus;
 import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import br.com.prova.cotefacil.apipedidos.entities.orders.OrderItem;
-import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.repository.OrderRepository;
 import br.com.prova.cotefacil.apipedidos.services.authService.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,9 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,22 +20,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
 @Transactional
 @DisplayName("Testes de Integração - OrderController")
 class OrderControllerIntegrationTest {
-
-    @MockBean
-    private UsuarioService usuarioService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -56,7 +45,7 @@ class OrderControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        token = tokenService.criarToken("testuser");
+        token = tokenService.createToken("testuser");
     }
 
     @Test
@@ -149,7 +138,7 @@ class OrderControllerIntegrationTest {
     void shouldUpdateOrderSuccessfully() throws Exception {
 
         Order pedido = createTestOrder();
-        Long itemId = pedido.getItems().get(0).getId(); // ✅ ID real
+        Long itemId = pedido.getItems().get(0).getId();
 
         String updateJson = """
                 {
@@ -195,27 +184,26 @@ class OrderControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-        private Order createTestOrder () {
+    private Order createTestOrder() {
 
-            Order order = new Order();
-            order.setCustomerName("João Silva");
-            order.setCustomerEmail("joao@email.com");
-            order.setOrderDate(LocalDateTime.now());
-            order.setStatus(OrderStatus.PENDING);
-            order.setTotalAmount(new BigDecimal("100.00"));
-            order.setCreatedBy("testuser");
-            order.setItems(new ArrayList<>());
+        Order order = new Order();
+        order.setCustomerName("João Silva");
+        order.setCustomerEmail("joao@email.com");
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(OrderStatus.PENDING);
+        order.setTotalAmount(new BigDecimal("100.00"));
+        order.setCreatedBy("testuser");
+        order.setItems(new ArrayList<>());
 
-            OrderItem item = new OrderItem();
-            item.setProductName("Produto 1");
-            item.setQuantity(2);
-            item.setUnitPrice(new BigDecimal("50.00"));
-            item.setSubtotal(new BigDecimal("100.00"));
-            item.setOrder(order);
+        OrderItem item = new OrderItem();
+        item.setProductName("Produto 1");
+        item.setQuantity(2);
+        item.setUnitPrice(new BigDecimal("50.00"));
+        item.setSubtotal(new BigDecimal("100.00"));
+        item.setOrder(order);
 
-            order.getItems().add(item);
+        order.getItems().add(item);
 
-            return orderRepository.save(order);
-        }
+        return orderRepository.save(order);
     }
-
+}

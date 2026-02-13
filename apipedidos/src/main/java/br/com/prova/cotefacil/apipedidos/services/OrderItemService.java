@@ -5,7 +5,7 @@ import br.com.prova.cotefacil.apipedidos.dtos.OrderItemUpdateDTO;
 import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import br.com.prova.cotefacil.apipedidos.entities.orders.OrderItem;
 import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
-import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.repository.OrderRepository;
 import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class OrderItemService {
     private final SecurityUtils securityUtils;
 
     @Transactional(readOnly = true)
-    public List<OrderItemDTO> buscarItensPorPedido(Long orderId) {
+    public List<OrderItemDTO> getOrderItemById(Long orderId) {
         String username = securityUtils.getCurrentUsername();
 
         log.info("[ORDER-ITEM] Buscando itens do pedido id={}", orderId);
@@ -42,7 +42,7 @@ public class OrderItemService {
     }
 
     @Transactional
-    public List<OrderItemDTO> adicionaItemPedido(List<OrderItemUpdateDTO> orderItemUpdateDTO, Long id) {
+    public List<OrderItemDTO> addOrderItem(List<OrderItemUpdateDTO> orderItemUpdateDTO, Long id) {
         String username = securityUtils.getCurrentUsername();
         log.info("[ORDER-ITEM] Adicionando itens ao pedido id={}", id);
 

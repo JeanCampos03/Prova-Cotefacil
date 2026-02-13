@@ -198,7 +198,7 @@ Para executar os testes:
 
 - `br.com.prova.cotefacil.apipedidos.controllers` - Controllers REST
 - `br.com.prova.cotefacil.apipedidos.services` - Lógica de negócio
-- `br.com.prova.cotefacil.apipedidos.repositorys` - Acesso a dados
+- `br.com.prova.cotefacil.apipedidos.repository` - Acesso a dados
 - `br.com.prova.cotefacil.apipedidos.entities` - Entidades JPA
 - `br.com.prova.cotefacil.apipedidos.dtos` - Data Transfer Objects
 - `br.com.prova.cotefacil.apipedidos.config` - Configurações

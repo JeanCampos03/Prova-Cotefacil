@@ -2,7 +2,7 @@ package br.com.prova.cotefacil.apigateway.security;
 
 
 import br.com.prova.cotefacil.apigateway.exception.TokenException;
-import br.com.prova.cotefacil.apigateway.service.UsuarioService;
+import br.com.prova.cotefacil.apigateway.service.UserService;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,13 +20,13 @@ import java.io.IOException;
 
 @Component
 @AllArgsConstructor
-public class FiltroAutenticacao extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
     private final TokenService tokenService;
 
 
-    private final UsuarioService usuarioService;
+    private final UserService userService;
 
 
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -34,10 +34,10 @@ public class FiltroAutenticacao extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = pegarToken(request);
+            String token = getToken(request);
             if (token != null) {
                 String usuario = tokenService.validacaoToken(token);
-                UserDetails user = usuarioService.pegarUsuario(usuario);
+                UserDetails user = userService.pegarUsuario(usuario);
 
                 var autenticacao = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(autenticacao);
@@ -54,7 +54,7 @@ public class FiltroAutenticacao extends OncePerRequestFilter {
 
     }
 
-    private String pegarToken(HttpServletRequest request) {
+    private String getToken(HttpServletRequest request) {
         String headerAutenticacao = request.getHeader("Authorization");
         if (headerAutenticacao == null || !headerAutenticacao.startsWith("Bearer ")) {
             return null;

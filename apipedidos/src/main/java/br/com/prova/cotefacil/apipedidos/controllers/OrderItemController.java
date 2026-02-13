@@ -32,8 +32,8 @@ public class OrderItemController {
     // GET /api/orders/{id}/items – Listar itens de um pedido
     @GetMapping("/{id}/items")
     @Operation(summary = "Listar produtos do pedido")
-    public ResponseEntity<RestMensage> listarItensPedido(@PathVariable Long id) {
-        List<OrderItemDTO> itens = orderItemService.buscarItensPorPedido(id);
+    public ResponseEntity<RestMensage> getOrderItemById(@PathVariable Long id) {
+        List<OrderItemDTO> itens = orderItemService.getOrderItemById(id);
         return ResponseEntity.ok(new RestMensage(HttpStatus.OK, itens, LocalDateTime.now()));
     }
 
@@ -41,8 +41,8 @@ public class OrderItemController {
     // POST /api/orders/{id}/items – Adicionar item ao pedido
     @PostMapping("/{id}/items")
     @Operation(summary = "Adicionar produtos ao pedido")
-    public ResponseEntity<RestMensage> adicionarItemPedido(@RequestBody @Valid List< @Valid OrderItemUpdateDTO> orderItemUpdateDTO, @PathVariable Long id) {
-        List<OrderItemDTO> itensCriados = orderItemService.adicionaItemPedido(orderItemUpdateDTO, id);
+    public ResponseEntity<RestMensage> addOrderItem(@RequestBody @Valid List< @Valid OrderItemUpdateDTO> orderItemUpdateDTO, @PathVariable Long id) {
+        List<OrderItemDTO> itensCriados = orderItemService.addOrderItem(orderItemUpdateDTO, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(new RestMensage(HttpStatus.CREATED, itensCriados, LocalDateTime.now()));
     }
 }

@@ -6,7 +6,7 @@ import br.com.prova.cotefacil.apipedidos.dtos.OrderItemDTO;
 import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import br.com.prova.cotefacil.apipedidos.exceptions.BusinessException;
 import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
-import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.repository.OrderRepository;
 import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ class OrderServiceSecurityTest {
         });
 
         // Act
-        OrderDTO result = orderService.salvarPedido(orderDTO);
+        OrderDTO result = orderService.createOrder(orderDTO);
 
         // Assert
         assertNotNull(result);
@@ -86,14 +86,14 @@ class OrderServiceSecurityTest {
 
         // Act & Assert
         assertThrows(NotFoundException.class, () -> {
-            orderService.listarPedidosPorId(pedidoId);
+            orderService.getOrderById(pedidoId);
         });
 
         verify(orderRepository).findByIdAndCreatedBy(pedidoId, "user1");
     }
 
     @Test
-    void naoDevePermitirAtualizarPedidoDeOutroUsuario() {
+    void naoDevePermitirUpdateOrderDeOutroUsuario() {
         // Arrange
         Long pedidoId = 1L;
 
@@ -102,14 +102,14 @@ class OrderServiceSecurityTest {
 
         // Act & Assert
         assertThrows(BusinessException.class, () -> {
-            orderService.atualizarPedido(pedidoId, null);
+            orderService.updateOrder(pedidoId, null);
         });
 
         verify(orderRepository).findByIdAndCreatedBy(pedidoId, "user1");
     }
 
     @Test
-    void naoDevePermitirExcluirPedidoDeOutroUsuario() {
+    void naoDevePermitirDeleteOrderDeOutroUsuario() {
         // Arrange
         Long pedidoId = 1L;
         when(orderRepository.findByIdAndCreatedBy(pedidoId, "user1"))
@@ -117,7 +117,7 @@ class OrderServiceSecurityTest {
 
         // Act & Assert
         assertThrows(NotFoundException.class, () -> {
-            orderService.excluirPedido(pedidoId);
+            orderService.deleteOrder(pedidoId);
         });
 
         verify(orderRepository).findByIdAndCreatedBy(pedidoId, "user1");

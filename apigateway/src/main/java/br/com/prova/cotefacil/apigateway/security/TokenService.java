@@ -1,7 +1,7 @@
 package br.com.prova.cotefacil.apigateway.security;
 
 
-import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -17,12 +17,12 @@ public class TokenService {
     @Value("${api.chave.secreta}")
     private String chaveSecreta;
 
-    public String criarToken(Usuario usuario) {
+    public String criarToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
             return JWT.create()
                     .withIssuer("authentication-api")
-                    .withSubject(usuario.getUsername())
+                    .withSubject(user.getUsername())
                     .withExpiresAt(tempoExpiracao())
                     .sign(algorithm);
         } catch (

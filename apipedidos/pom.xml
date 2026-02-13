@@ -11,7 +11,7 @@
 	<groupId>br.com.prova.cotefacil</groupId>
 	<artifactId>apipedidos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>api2</name>
+	<name>apigateway</name>
 	<description>API 2 - CRUD de Pedidos</description>
 	<url/>
 	<licenses>

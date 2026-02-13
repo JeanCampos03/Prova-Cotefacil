@@ -1,8 +1,8 @@
 package br.com.prova.cotefacil.apigateway.config;
 
-import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.User;
 import br.com.prova.cotefacil.apigateway.entities.enums.UsuarioRole;
-import br.com.prova.cotefacil.apigateway.repository.UsuarioRepository;
+import br.com.prova.cotefacil.apigateway.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class Seeder implements CommandLineRunner {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UserRepository userRepository;
 
 
     private final PasswordEncoder passwordEncoder;
@@ -24,18 +24,18 @@ public class Seeder implements CommandLineRunner {
 
         log.info("[SEEDER] Iniciando carga inicial...");
 
-        if (usuarioRepository.count() > 0) {
+        if (userRepository.count() > 0) {
             log.info("[SEEDER] Já existem dados, pulando seed.");
             return;
         }
 
-        Usuario usuario = Usuario.builder()
+        User user = User.builder()
                 .username("usuario")
                 .password(passwordEncoder.encode("senha123"))
                 .role(UsuarioRole.USER)
                 .build();
 
-        usuarioRepository.save(usuario);
+        userRepository.save(user);
 
         log.info("[SEEDER] Pedido inicial criado!");
     }

@@ -21,18 +21,18 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(UsuarioNaoEncontradoException.class)
-    private ResponseEntity<RestMensagemDTO> usuarioNaoEncontrado(UsuarioNaoEncontradoException exception) {
+    @ExceptionHandler(UserNotFoundException.class)
+    private ResponseEntity<RestMensagemDTO> userNotFound(UserNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestMensagemDTO(HttpStatus.UNAUTHORIZED, exception.getMessage(), LocalDateTime.now()));
     }
 
     @ExceptionHandler(TokenException.class)
-    private ResponseEntity<RestMensagemDTO> tokenInvalido(TokenException exception) {
+    private ResponseEntity<RestMensagemDTO> invalidToken(TokenException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new RestMensagemDTO(HttpStatus.UNAUTHORIZED, exception.getMessage(), LocalDateTime.now()));
     }
 
-    @ExceptionHandler(UsuarioExistenteException.class)
-    private ResponseEntity<RestMensagemDTO> usuarioExistente(UsuarioExistenteException exception) {
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    private ResponseEntity<RestMensagemDTO> userAlreadyExists(UserAlreadyExistsException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RestMensagemDTO(HttpStatus.BAD_REQUEST, exception.getMessage(), LocalDateTime.now()));
     }
 
@@ -45,12 +45,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<RestMensagemDTO> handleTipoInvalido(MethodArgumentTypeMismatchException exception) {
+    public ResponseEntity<RestMensagemDTO> handleInvalidType(MethodArgumentTypeMismatchException exception) {
         return ResponseEntity.badRequest().body(new RestMensagemDTO(HttpStatus.BAD_REQUEST, "Tipos inválidos na requisição.", LocalDateTime.now()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<RestMensagemDTO> handleDadoInvalido(ConstraintViolationException exception) {
+    public ResponseEntity<RestMensagemDTO> handleInvalidData(ConstraintViolationException exception) {
         return ResponseEntity.badRequest().body(new RestMensagemDTO(HttpStatus.BAD_REQUEST, "Dados inválidos na requisição.", LocalDateTime.now()));
     }
 

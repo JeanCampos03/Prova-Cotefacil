@@ -31,23 +31,23 @@ public class OrderController {
     // GET /api/orders – Listar todos os pedidos (com paginação)
     @GetMapping
     @Operation(summary = "Listar pedidos", security = @SecurityRequirement(name = "bearer-jwt"))
-    public ResponseEntity<Page<OrderDTO>> listarPedidos(Pageable pageable) {
-        Page<OrderDTO> pedidos = orderService.listarPedidos(pageable);
+    public ResponseEntity<Page<OrderDTO>> listOrders(Pageable pageable) {
+        Page<OrderDTO> pedidos = orderService.listOrders(pageable);
         return ResponseEntity.ok(pedidos);
     }
 
     // GET /api/orders/{id} – Buscar pedido por ID
     @GetMapping("/{id}")
     @Operation(summary = "Buscar pedido por ID", security = @SecurityRequirement(name = "bearer-jwt"))
-    public OrderDTO listarPedidosPorId(@PathVariable @Positive Long id) {
-        return orderService.listarPedidosPorId(id);
+    public OrderDTO getOrderById(@PathVariable @Positive Long id) {
+        return orderService.getOrderById(id);
     }
 
     // POST /api/orders – Criar novo pedido
     @PostMapping
     @Operation(summary = "Criar novo pedido", security = @SecurityRequirement(name = "bearer-jwt"))
-    public ResponseEntity<RestMensage> salvarPedido(@RequestBody @Valid OrderDTO dto) {
-        OrderDTO response = orderService.salvarPedido(dto);
+    public ResponseEntity<RestMensage> createOrder(@RequestBody @Valid OrderDTO dto) {
+        OrderDTO response = orderService.createOrder(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(new RestMensage(HttpStatus.CREATED, response, LocalDateTime.now()));
 
     }
@@ -55,16 +55,16 @@ public class OrderController {
     // PUT /api/orders/{id} – Atualizar pedido
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar pedido", security = @SecurityRequirement(name = "bearer-jwt"))
-    public ResponseEntity<RestMensage> atualizarPedido(@PathVariable Long id, @RequestBody @Valid OrderUpdateDTO itemDTO) {
-        OrderDTO response = orderService.atualizarPedido(id, itemDTO);
+    public ResponseEntity<RestMensage> updateOrder(@PathVariable Long id, @RequestBody @Valid OrderUpdateDTO itemDTO) {
+        OrderDTO response = orderService.updateOrder(id, itemDTO);
         return ResponseEntity.status(HttpStatus.OK).body(new RestMensage(HttpStatus.OK, response, LocalDateTime.now()));
     }
 
     // DELETE /api/orders/{id} – Deletar pedido
     @DeleteMapping("/{id}")
     @Operation(summary = "Excluir pedido (exclusão lógica)", security = @SecurityRequirement(name = "bearer-jwt"))
-    public ResponseEntity<RestMensage> deletarPedido(@PathVariable Long id) {
-        orderService.excluirPedido(id);
+    public ResponseEntity<RestMensage> deleteOrder(@PathVariable Long id) {
+        orderService.deleteOrder(id);
         return ResponseEntity.status(HttpStatus.OK).body(new RestMensage(HttpStatus.NO_CONTENT, "Pedido ID '" + id + "' excluído com sucesso",LocalDateTime.now()));
     }
 

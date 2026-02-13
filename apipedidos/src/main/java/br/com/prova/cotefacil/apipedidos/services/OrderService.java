@@ -9,7 +9,7 @@ import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import br.com.prova.cotefacil.apipedidos.entities.orders.OrderItem;
 import br.com.prova.cotefacil.apipedidos.exceptions.BusinessException;
 import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
-import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.repository.OrderRepository;
 import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final SecurityUtils securityUtils;
 
-    public Page<OrderDTO> listarPedidos(@PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public Page<OrderDTO> listOrders(@PageableDefault(page = 0, size = 10) Pageable pageable) {
         String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Listando pedidos - page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
         Page<Order> page = orderRepository.findAllByStatusNotAndCreatedBy(OrderStatus.CANCELLED ,pageable, username);
@@ -38,7 +38,7 @@ public class OrderService {
         return page.map(OrderDTO::fromEntity);
     }
 
-    public OrderDTO listarPedidosPorId(Long id) {
+    public OrderDTO getOrderById(Long id) {
 
         String username = securityUtils.getCurrentUsername();
 
@@ -54,7 +54,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDTO salvarPedido(OrderDTO dto) {
+    public OrderDTO createOrder(OrderDTO dto) {
 
         String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Criando pedido cliente={}", dto.customerName());
@@ -101,7 +101,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDTO atualizarPedido(Long id, OrderUpdateDTO dto) {
+    public OrderDTO updateOrder(Long id, OrderUpdateDTO dto) {
         String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Atualizando pedido id={}", id);
 
@@ -167,7 +167,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void excluirPedido(Long orderId) {
+    public void deleteOrder(Long orderId) {
         String username = securityUtils.getCurrentUsername();
         log.info("[ORDER] Cancelando pedido id={}", orderId);
 

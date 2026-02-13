@@ -1,11 +1,11 @@
 package br.com.prova.cotefacil.apigateway.controller;
 
 import br.com.prova.cotefacil.apigateway.dto.AuthDTO;
-import br.com.prova.cotefacil.apigateway.dto.RegistroUsuarioDTO;
-import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.dto.RegisteUserDTO;
+import br.com.prova.cotefacil.apigateway.entities.User;
 import br.com.prova.cotefacil.apigateway.entities.enums.UsuarioRole;
 import br.com.prova.cotefacil.apigateway.security.TokenService;
-import br.com.prova.cotefacil.apigateway.service.UsuarioService;
+import br.com.prova.cotefacil.apigateway.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +45,14 @@ class AuthControllerTest {
     private TokenService tokenService;
 
     @MockBean
-    private UsuarioService usuarioService;
+    private UserService userService;
 
     @Test
     void login_WithValidCredentials_ReturnsToken() throws Exception {
-        Usuario usuario = new Usuario("usuario", "encoded", UsuarioRole.USER);
+        User user = new User("usuario", "encoded", UsuarioRole.USER);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities()));
-        when(tokenService.criarToken(any(Usuario.class))).thenReturn("token-jwt-teste");
+                .thenReturn(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
+        when(tokenService.criarToken(any(User.class))).thenReturn("token-jwt-teste");
 
         AuthDTO dto = new AuthDTO("usuario", "senha123");
 
@@ -61,7 +61,7 @@ class AuthControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.mensagem.token").value("token-jwt-teste"));
+                .andExpect(jsonPath("$.message.token").value("token-jwt-teste"));
     }
 
     @Test
@@ -86,26 +86,26 @@ class AuthControllerTest {
 
     @Test
     void register_WithValidData_ReturnsToken() throws Exception {
-        when(usuarioService.existeUsuario("novousuario")).thenReturn(false);
-        when(tokenService.criarToken(any(Usuario.class))).thenReturn("token-novo");
+        when(userService.existeUsuario("novousuario")).thenReturn(false);
+        when(tokenService.criarToken(any(User.class))).thenReturn("token-novo");
 
-        RegistroUsuarioDTO dto = new RegistroUsuarioDTO("novousuario", "senha123");
+        RegisteUserDTO dto = new RegisteUserDTO("novousuario", "senha123");
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value(201))
-                .andExpect(jsonPath("$.mensagem.token").value("token-novo"));
+                .andExpect(jsonPath("$.message.token").value("token-novo"));
 
-        verify(usuarioService).salvar(any(Usuario.class));
+        verify(userService).salvar(any(User.class));
     }
 
     @Test
     void register_WithExistingUser_Returns400() throws Exception {
-        when(usuarioService.existeUsuario("existente")).thenReturn(true);
+        when(userService.existeUsuario("existente")).thenReturn(true);
 
-        RegistroUsuarioDTO dto = new RegistroUsuarioDTO("existente", "senha123");
+        RegisteUserDTO dto = new RegisteUserDTO("existente", "senha123");
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)

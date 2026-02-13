@@ -1,4 +1,4 @@
-package br.com.prova.cotefacil.apipedidos.repositorys;
+package br.com.prova.cotefacil.apipedidos.repository;
 
 import br.com.prova.cotefacil.apipedidos.entities.enums.OrderStatus;
 import br.com.prova.cotefacil.apipedidos.entities.orders.Order;

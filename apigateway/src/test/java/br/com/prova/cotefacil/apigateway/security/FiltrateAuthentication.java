@@ -1,8 +1,8 @@
 package br.com.prova.cotefacil.apigateway.security;
 
-import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.User;
 import br.com.prova.cotefacil.apigateway.exception.TokenException;
-import br.com.prova.cotefacil.apigateway.service.UsuarioService;
+import br.com.prova.cotefacil.apigateway.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,7 @@ class FiltrateAuthentication {
     private TokenService tokenService;
 
     @Mock
-    private UsuarioService usuarioService; // 🔥 FALTAVA ISSO
+    private UserService userService; // 🔥 FALTAVA ISSO
 
     @Mock
     private HandlerExceptionResolver handlerExceptionResolver;
@@ -41,7 +41,7 @@ class FiltrateAuthentication {
     private FilterChain filterChain;
 
     @InjectMocks
-    private FiltroAutenticacao filtroAutenticacao;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @BeforeEach
     void setup() {
@@ -59,8 +59,8 @@ class FiltrateAuthentication {
         String token = "valid.jwt.token";
         String username = "testuser";
 
-        Usuario usuario = new Usuario();
-        usuario.setUsername(username);
+        User user = new User();
+        user.setUsername(username);
 
         when(request.getHeader("Authorization"))
                 .thenReturn("Bearer " + token);
@@ -68,10 +68,10 @@ class FiltrateAuthentication {
         when(tokenService.validacaoToken(token))
                 .thenReturn(username);
 
-        when(usuarioService.pegarUsuario(username))
-                .thenReturn(usuario);
+        when(userService.pegarUsuario(username))
+                .thenReturn(user);
 
-        filtroAutenticacao.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         assertNotNull(SecurityContextHolder.getContext().getAuthentication());
         assertEquals(username,
@@ -88,7 +88,7 @@ class FiltrateAuthentication {
         when(request.getHeader("Authorization"))
                 .thenReturn(null);
 
-        filtroAutenticacao.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
@@ -105,7 +105,7 @@ class FiltrateAuthentication {
         when(tokenService.validacaoToken(token))
                 .thenThrow(new TokenException("Token inválido"));
 
-        filtroAutenticacao.doFilterInternal(request, response, filterChain);
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
         verify(handlerExceptionResolver).resolveException(
                 eq(request),

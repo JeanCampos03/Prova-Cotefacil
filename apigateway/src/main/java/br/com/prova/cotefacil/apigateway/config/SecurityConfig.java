@@ -1,6 +1,6 @@
 package br.com.prova.cotefacil.apigateway.config;
 
-import br.com.prova.cotefacil.apigateway.security.FiltroAutenticacao;
+import br.com.prova.cotefacil.apigateway.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,10 +23,10 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
-public class ConfiguracaoSeguranca {
+public class SecurityConfig {
 
 
-    private final FiltroAutenticacao filtroAutenticacao;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,7 +50,7 @@ public class ConfiguracaoSeguranca {
                     response.setContentType("application/json");
                     response.getWriter().write("{\"status\":401,\"mensagem\":\"Acesso negado\"}");
                 }))
-                .addFilterBefore(filtroAutenticacao, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

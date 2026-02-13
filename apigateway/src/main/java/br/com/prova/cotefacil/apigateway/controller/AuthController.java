@@ -3,7 +3,7 @@ package br.com.prova.cotefacil.apigateway.controller;
 import br.com.prova.cotefacil.apigateway.dto.ApiResponseDTO;
 import br.com.prova.cotefacil.apigateway.dto.AuthDTO;
 import br.com.prova.cotefacil.apigateway.dto.LoginResponseDTO;
-import br.com.prova.cotefacil.apigateway.dto.RegistroUsuarioDTO;
+import br.com.prova.cotefacil.apigateway.dto.RegisteUserDTO;
 import br.com.prova.cotefacil.apigateway.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Registrar novo usuário")
-    public ResponseEntity<ApiResponseDTO<LoginResponseDTO>> register(@RequestBody @Valid RegistroUsuarioDTO dados) {
+    public ResponseEntity<ApiResponseDTO<LoginResponseDTO>> register(@RequestBody @Valid RegisteUserDTO dados) {
         var token = authService.register(dados);
         return ResponseEntity.status(201).body(new ApiResponseDTO<>(201, token, LocalDateTime.now()));
     }

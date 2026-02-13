@@ -1,6 +1,6 @@
 package br.com.prova.cotefacil.apigateway.security;
 
-import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.User;
 import br.com.prova.cotefacil.apigateway.entities.enums.UsuarioRole;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,18 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenServiceTest {
 
     private TokenService tokenService;
-    private Usuario usuario;
+    private User user;
 
     @BeforeEach
     void setUp() {
         tokenService = new TokenService();
         ReflectionTestUtils.setField(tokenService, "chaveSecreta", "chave-secreta-teste");
-        usuario = new Usuario("teste", "senha", UsuarioRole.USER);
+        user = new User("teste", "senha", UsuarioRole.USER);
     }
 
     @Test
     void criarToken_RetornaTokenValido() {
-        String token = tokenService.criarToken(usuario);
+        String token = tokenService.criarToken(user);
 
         assertNotNull(token);
         assertFalse(token.isEmpty());
@@ -32,7 +32,7 @@ class TokenServiceTest {
 
     @Test
     void validacaoToken_ComTokenValido_RetornaUsername() {
-        String token = tokenService.criarToken(usuario);
+        String token = tokenService.criarToken(user);
         String username = tokenService.validacaoToken(token);
 
         assertEquals("teste", username);
@@ -46,7 +46,7 @@ class TokenServiceTest {
 
     @Test
     void token_TemExpiracaoDeUmaHora() {
-        String token = tokenService.criarToken(usuario);
+        String token = tokenService.criarToken(user);
         String username = tokenService.validacaoToken(token);
         assertNotNull(username);
 

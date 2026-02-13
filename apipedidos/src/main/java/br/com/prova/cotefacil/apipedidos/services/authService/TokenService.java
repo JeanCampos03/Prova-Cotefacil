@@ -16,7 +16,7 @@ public class TokenService {
     @Value("${api.chave.secreta}")
     private String chaveSecreta;
 
-    public String validacaoToken(String token) {
+    public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
             return JWT.require(algorithm)
@@ -30,7 +30,7 @@ public class TokenService {
     }
 
 
-    public String criarToken(String username) {
+    public String createToken(String username) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
             return JWT.create()

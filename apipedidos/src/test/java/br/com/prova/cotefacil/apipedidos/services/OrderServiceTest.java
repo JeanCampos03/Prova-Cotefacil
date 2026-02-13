@@ -7,7 +7,7 @@ import br.com.prova.cotefacil.apipedidos.entities.enums.OrderStatus;
 import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import br.com.prova.cotefacil.apipedidos.exceptions.BusinessException;
 import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
-import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.repository.OrderRepository;
 import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,7 +84,7 @@ class OrderServiceTest {
                 "user1"
         )).thenReturn(page);
 
-        Page<OrderDTO> result = orderService.listarPedidos(pageable);
+        Page<OrderDTO> result = orderService.listOrders(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -103,7 +103,7 @@ class OrderServiceTest {
         when(orderRepository.findByIdAndCreatedBy(1L, "user1"))
                 .thenReturn(Optional.of(order));
 
-        OrderDTO result = orderService.listarPedidosPorId(1L);
+        OrderDTO result = orderService.getOrderById(1L);
 
         assertNotNull(result);
         assertEquals("João Silva", result.customerName());
@@ -119,7 +119,7 @@ class OrderServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class,
-                () -> orderService.listarPedidosPorId(999L));
+                () -> orderService.getOrderById(999L));
 
         verify(orderRepository).findByIdAndCreatedBy(999L, "user1");
     }
@@ -131,7 +131,7 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(order);
 
-        OrderDTO result = orderService.salvarPedido(orderDTO);
+        OrderDTO result = orderService.createOrder(orderDTO);
 
         assertNotNull(result);
 
@@ -163,7 +163,7 @@ class OrderServiceTest {
                     return saved;
                 });
 
-        orderService.salvarPedido(dto);
+        orderService.createOrder(dto);
 
         verify(orderRepository).save(any(Order.class));
     }
@@ -181,7 +181,7 @@ class OrderServiceTest {
                 .thenReturn(Optional.of(delivered));
 
         assertThrows(BusinessException.class, () ->
-                orderService.atualizarPedido(1L,
+                orderService.updateOrder(1L,
                         new OrderUpdateDTO(null, null, OrderStatus.PENDING, null)
                 )
         );
@@ -199,7 +199,7 @@ class OrderServiceTest {
         when(orderRepository.findByIdAndCreatedBy(1L, "user1"))
                 .thenReturn(Optional.of(pending));
 
-        orderService.excluirPedido(1L);
+        orderService.deleteOrder(1L);
 
         assertEquals(OrderStatus.CANCELLED, pending.getStatus());
     }
@@ -217,6 +217,6 @@ class OrderServiceTest {
                 .thenReturn(Optional.of(delivered));
 
         assertThrows(BusinessException.class,
-                () -> orderService.excluirPedido(1L));
+                () -> orderService.deleteOrder(1L));
     }
 }
