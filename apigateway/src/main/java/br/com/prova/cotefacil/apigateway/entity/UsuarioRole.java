@@ -1,4 +1,4 @@
-package br.com.prova.cotefacil.api1.entity;
+package br.com.prova.cotefacil.apigateway.entity;
 
 public enum UsuarioRole {
     USER("USER");
