@@ -1,13 +1,11 @@
-package br.com.prova.cotefacil.api1.security;
+package br.com.prova.cotefacil.apigateway.security;
 
-import br.com.prova.cotefacil.api1.entity.Usuario;
-import br.com.prova.cotefacil.api1.entity.UsuarioRole;
+import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.entity.UsuarioRole;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 

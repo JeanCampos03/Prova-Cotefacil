@@ -1,10 +1,10 @@
-package br.com.prova.cotefacil.api2;
+package br.com.prova.cotefacil.apipedidos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Api2ApplicationTests {
+class ApiPedidosApplicationTests {
 
 	@Test
 	void contextLoads() {

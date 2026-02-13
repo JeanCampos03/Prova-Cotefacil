@@ -1,10 +1,11 @@
-package br.com.prova.cotefacil.api2.controllers;
+package br.com.prova.cotefacil.apipedidos.controllers;
 
-import br.com.prova.cotefacil.api2.entitys.enums.OrderStatus;
-import br.com.prova.cotefacil.api2.entitys.orders.Order;
-import br.com.prova.cotefacil.api2.entitys.orders.OrderItem;
-import br.com.prova.cotefacil.api2.repositorys.OrderRepository;
-import br.com.prova.cotefacil.api2.services.authService.TokenService;
+import br.com.prova.cotefacil.apigateway.service.UsuarioService;
+import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
+import br.com.prova.cotefacil.apipedidos.entitys.orders.Order;
+import br.com.prova.cotefacil.apipedidos.entitys.orders.OrderItem;
+import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
+import br.com.prova.cotefacil.apipedidos.services.authService.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,8 +23,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,6 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @DisplayName("Testes de Integração - OrderController")
 class OrderControllerIntegrationTest {
+
+    @MockBean
+    private UsuarioService usuarioService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,14 +56,13 @@ class OrderControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        // Token como se viesse da API 1 (gateway)
         token = tokenService.criarToken("testuser");
     }
 
     @Test
     @DisplayName("Deve criar pedido com sucesso")
-    void deveCriarPedidoComSucesso() throws Exception {
-        // Arrange
+    void shouldCreateOrderSuccessfully() throws Exception {
+
         String orderJson = """
                 {
                     "customerName": "João Silva",
@@ -69,7 +77,6 @@ class OrderControllerIntegrationTest {
                 }
                 """;
 
-        // Act & Assert
         mockMvc.perform(post("/api/orders")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -80,8 +87,8 @@ class OrderControllerIntegrationTest {
 
     @Test
     @DisplayName("Deve retornar 401 ao criar pedido sem autenticação")
-    void deveRetornar401SemAutenticacao() throws Exception {
-        // Arrange
+    void shouldReturn401WithoutAuthentication() throws Exception {
+
         String orderJson = """
                 {
                     "customerName": "João Silva",
@@ -96,7 +103,6 @@ class OrderControllerIntegrationTest {
                 }
                 """;
 
-        // Act & Assert
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(orderJson))
@@ -105,11 +111,10 @@ class OrderControllerIntegrationTest {
 
     @Test
     @DisplayName("Deve listar pedidos com paginação")
-    void deveListarPedidosComPaginacao() throws Exception {
-        // Arrange
-        criarPedidoTeste();
+    void shouldListOrdersWithPagination() throws Exception {
 
-        // Act & Assert
+        createTestOrder();
+
         mockMvc.perform(get("/api/orders?page=0&size=10")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
@@ -119,11 +124,10 @@ class OrderControllerIntegrationTest {
 
     @Test
     @DisplayName("Deve buscar pedido por ID com sucesso")
-    void deveBuscarPedidoPorIdComSucesso() throws Exception {
-        // Arrange
-        Order pedido = criarPedidoTeste();
+    void shouldGetOrderByIdSuccessfully() throws Exception {
 
-        // Act & Assert
+        Order pedido = createTestOrder();
+
         mockMvc.perform(get("/api/orders/" + pedido.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
@@ -133,8 +137,8 @@ class OrderControllerIntegrationTest {
 
     @Test
     @DisplayName("Deve retornar 404 quando pedido não existe")
-    void deveRetornar404QuandoPedidoNaoExiste() throws Exception {
-        // Act & Assert
+    void shouldReturn404WhenOrderDoesNotExist() throws Exception {
+
         mockMvc.perform(get("/api/orders/999")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound());
@@ -142,32 +146,32 @@ class OrderControllerIntegrationTest {
 
     @Test
     @DisplayName("Deve atualizar pedido com sucesso")
-    void deveAtualizarPedidoComSucesso() throws Exception {
-        // Arrange
-        Order pedido = criarPedidoTeste();
-        String updateJson = """
-                    {
-                        "itemId":76,
-                                    "status": "CONFIRMED"
-                                }
-                """;
+    void shouldUpdateOrderSuccessfully() throws Exception {
 
-        // Act & Assert
+        Order pedido = createTestOrder();
+        Long itemId = pedido.getItems().get(0).getId(); // ✅ ID real
+
+        String updateJson = """
+                {
+                    "itemId": %d,
+                    "status": "CONFIRMED"
+                }
+                """.formatted(itemId);
+
         mockMvc.perform(put("/api/orders/" + pedido.getId())
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("status").value(200));
+                .andExpect(jsonPath("$.status").value(200));
     }
 
     @Test
     @DisplayName("Deve excluir pedido com sucesso")
-    void deveExcluirPedidoComSucesso() throws Exception {
-        // Arrange
-        Order pedido = criarPedidoTeste();
+    void shouldDeleteOrderSuccessfully() throws Exception {
 
-        // Act & Assert
+        Order pedido = createTestOrder();
+
         mockMvc.perform(delete("/api/orders/" + pedido.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk());
@@ -175,8 +179,8 @@ class OrderControllerIntegrationTest {
 
     @Test
     @DisplayName("Deve validar dados de entrada")
-    void deveValidarDadosDeEntrada() throws Exception {
-        // Arrange - JSON sem campos obrigatórios
+    void shouldValidateInputData() throws Exception {
+
         String orderJsonInvalido = """
                 {
                     "customerName": "",
@@ -184,31 +188,34 @@ class OrderControllerIntegrationTest {
                 }
                 """;
 
-        // Act & Assert
         mockMvc.perform(post("/api/orders")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(orderJsonInvalido))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
     }
 
-    private Order criarPedidoTeste() {
-        Order order = new Order();
-        order.setCustomerName("João Silva");
-        order.setCustomerEmail("joao@email.com");
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(OrderStatus.PENDING);
-        order.setTotalAmount(new BigDecimal("100.00"));
-        order.setItems(new ArrayList<>());
+        private Order createTestOrder () {
 
-        OrderItem item = new OrderItem();
-        item.setProductName("Produto 1");
-        item.setQuantity(2);
-        item.setUnitPrice(new BigDecimal("50.00"));
-        item.setSubtotal(new BigDecimal("100.00"));
-        item.setOrder(order);
+            Order order = new Order();
+            order.setCustomerName("João Silva");
+            order.setCustomerEmail("joao@email.com");
+            order.setOrderDate(LocalDateTime.now());
+            order.setStatus(OrderStatus.PENDING);
+            order.setTotalAmount(new BigDecimal("100.00"));
+            order.setCreatedBy("testuser");
+            order.setItems(new ArrayList<>());
 
-        order.getItems().add(item);
-        return orderRepository.save(order);
+            OrderItem item = new OrderItem();
+            item.setProductName("Produto 1");
+            item.setQuantity(2);
+            item.setUnitPrice(new BigDecimal("50.00"));
+            item.setSubtotal(new BigDecimal("100.00"));
+            item.setOrder(order);
+
+            order.getItems().add(item);
+
+            return orderRepository.save(order);
+        }
     }
-}
+

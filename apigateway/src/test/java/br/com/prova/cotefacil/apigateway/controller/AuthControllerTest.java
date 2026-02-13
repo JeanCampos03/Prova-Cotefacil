@@ -1,17 +1,15 @@
-package br.com.prova.cotefacil.api1.controller;
+package br.com.prova.cotefacil.apigateway.controller;
 
-import br.com.prova.cotefacil.api1.dto.AuthDTO;
-import br.com.prova.cotefacil.api1.dto.RegistroUsuarioDTO;
-import br.com.prova.cotefacil.api1.entity.Usuario;
-import br.com.prova.cotefacil.api1.entity.UsuarioRole;
-import br.com.prova.cotefacil.api1.security.TokenService;
-import br.com.prova.cotefacil.api1.service.UsuarioService;
+import br.com.prova.cotefacil.apigateway.dto.AuthDTO;
+import br.com.prova.cotefacil.apigateway.dto.RegistroUsuarioDTO;
+import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.entity.UsuarioRole;
+import br.com.prova.cotefacil.apigateway.security.TokenService;
+import br.com.prova.cotefacil.apigateway.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -50,7 +48,7 @@ class AuthControllerTest {
     private UsuarioService usuarioService;
 
     @Test
-    void login_ComCredenciaisValidas_RetornaToken() throws Exception {
+    void login_WithValidCredentials_ReturnsToken() throws Exception {
         Usuario usuario = new Usuario("usuario", "encoded", UsuarioRole.USER);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities()));
@@ -67,7 +65,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void login_ComUsernameInvalido_Retorna401() throws Exception {
+    void login_WithInvalidUsername_Returns401() throws Exception {
         when(authenticationManager.authenticate(any())).thenThrow(new RuntimeException("Bad credentials"));
 
         AuthDTO dto = new AuthDTO("invalido", "senha123");
@@ -79,7 +77,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void login_ComDadosInvalidos_Retorna400() throws Exception {
+    void login_WithInvalidData_Returns400() throws Exception {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"\",\"password\":\"\"}"))
@@ -87,7 +85,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void register_ComDadosValidos_RetornaToken() throws Exception {
+    void register_WithValidData_ReturnsToken() throws Exception {
         when(usuarioService.existeUsuario("novousuario")).thenReturn(false);
         when(tokenService.criarToken(any(Usuario.class))).thenReturn("token-novo");
 
@@ -104,7 +102,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void register_ComUsuarioExistente_Retorna400() throws Exception {
+    void register_WithExistingUser_Returns400() throws Exception {
         when(usuarioService.existeUsuario("existente")).thenReturn(true);
 
         RegistroUsuarioDTO dto = new RegistroUsuarioDTO("existente", "senha123");
