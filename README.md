@@ -13,24 +13,26 @@ API de autenticação e gateway que roteia requisições de pedidos para a pedid
 
 ### Execução Local
 
-1. **Configure o MySQL** - Crie o banco `cotefacil` ou deixe a aplicação criar automaticamente:
+1. **Configure o MySQL** - Crie o banco `cotefacil`
    ```bash
    mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS cotefacil;"
    ```
 
-2. **Configure o `application.properties`** (ou variáveis de ambiente):
+2. **Configure o `application.properties`** com credenciais locais do seu banco:
    - `spring.datasource.username` - root
    - `spring.datasource.password` - 1234
    - `api2.url` - URL da API Pedidos (default: http://localhost:8082)
 
-3. **Execute a aplicação**:
+3. **Execute a aplicação** (Em dois terminais diferentes, dentro do projeto):
    ```bash
    Rodar API-Gateway
-    cd api1
+    A partir da pasta base:
+   cd api1
     ./mvnw spring-boot:run
 
 
    Rodar API-Pedidos
+   A partir da pasta base:
     cd api2
     ./mvnw spring-boot:run
    ```
@@ -38,13 +40,21 @@ API de autenticação e gateway que roteia requisições de pedidos para a pedid
 ### Execução com Docker
 
 ```bash
+A partir da pasta base:
+cd api1
+
 docker build -t api1-gateway .
-docker run -p 8080:8080 \
-  -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/cotefacil \
-  -e spring.datasource.username=root \
-  -e spring.datasource.password=sua_senha \
-  -e api2.url=http://host.docker.internal:8082 \
-  api1-gateway
+
+docker network create cotefacil-network
+
+docker run -d --name api1-gateway --network cotefacil-network -p 8080:8080 -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/cotefacil -e spring.datasource.username=root -e spring.datasource.password=1234 api1-gateway
+
+A partir da pasta base:
+cd api2
+
+docker build -t api2-pedidos .
+
+docker run -d --name api2-pedidos --network cotefacil-network -p 8082:8082 -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/cotefacil -e spring.datasource.username=root -e spring.datasource.password=1234 api2-pedidos
 ```
 
 ## Endpoints
