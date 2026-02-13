@@ -3,7 +3,7 @@ package br.com.prova.cotefacil.apipedidos.services;
 
 import br.com.prova.cotefacil.apipedidos.dtos.OrderDTO;
 import br.com.prova.cotefacil.apipedidos.dtos.OrderItemDTO;
-import br.com.prova.cotefacil.apipedidos.entitys.orders.Order;
+import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import br.com.prova.cotefacil.apipedidos.exceptions.BusinessException;
 import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
 import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;

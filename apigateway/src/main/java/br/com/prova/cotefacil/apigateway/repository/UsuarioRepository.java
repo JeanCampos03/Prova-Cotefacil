@@ -1,7 +1,7 @@
 package br.com.prova.cotefacil.apigateway.repository;
 
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

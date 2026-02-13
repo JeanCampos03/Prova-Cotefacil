@@ -1,7 +1,7 @@
 package br.com.prova.cotefacil.apigateway.security;
 
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.Usuario;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;

@@ -2,8 +2,8 @@ package br.com.prova.cotefacil.apigateway.controller;
 
 import br.com.prova.cotefacil.apigateway.dto.AuthDTO;
 import br.com.prova.cotefacil.apigateway.dto.RegistroUsuarioDTO;
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
-import br.com.prova.cotefacil.apigateway.entity.UsuarioRole;
+import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.enums.UsuarioRole;
 import br.com.prova.cotefacil.apigateway.security.TokenService;
 import br.com.prova.cotefacil.apigateway.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;

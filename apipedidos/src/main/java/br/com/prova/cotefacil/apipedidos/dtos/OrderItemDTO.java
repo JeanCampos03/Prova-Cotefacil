@@ -1,6 +1,6 @@
 package br.com.prova.cotefacil.apipedidos.dtos;
 
-import br.com.prova.cotefacil.apipedidos.entitys.orders.OrderItem;
+import br.com.prova.cotefacil.apipedidos.entities.orders.OrderItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 

@@ -1,6 +1,6 @@
 package br.com.prova.cotefacil.apigateway.security;
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.Usuario;
 import br.com.prova.cotefacil.apigateway.exception.TokenException;
 import br.com.prova.cotefacil.apigateway.service.UsuarioService;
 import jakarta.servlet.FilterChain;
@@ -13,11 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

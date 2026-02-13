@@ -1,7 +1,7 @@
 package br.com.prova.cotefacil.apigateway.service;
 
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.Usuario;
 import br.com.prova.cotefacil.apigateway.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

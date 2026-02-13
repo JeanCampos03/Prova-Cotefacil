@@ -1,7 +1,6 @@
-package br.com.prova.cotefacil.apipedidos.entitys.orders;
+package br.com.prova.cotefacil.apipedidos.entities.orders;
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
-import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
+import br.com.prova.cotefacil.apipedidos.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

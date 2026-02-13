@@ -1,7 +1,7 @@
 package br.com.prova.cotefacil.apigateway.security;
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
-import br.com.prova.cotefacil.apigateway.entity.UsuarioRole;
+import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.enums.UsuarioRole;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

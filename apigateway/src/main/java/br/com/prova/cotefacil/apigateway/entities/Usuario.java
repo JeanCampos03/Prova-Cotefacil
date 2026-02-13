@@ -1,6 +1,7 @@
-package br.com.prova.cotefacil.apigateway.entity;
+package br.com.prova.cotefacil.apigateway.entities;
 
 
+import br.com.prova.cotefacil.apigateway.entities.enums.UsuarioRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

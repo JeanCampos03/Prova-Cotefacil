@@ -126,15 +126,14 @@ curl -X POST http://localhost:8082/api/orders/1/items \
 Os status possíveis são:
 
 - `PENDING` - Pendente
-- `PROCESSING` - Em processamento
-- `SHIPPED` - Enviado
+- `CONFIRMED` - Confirmado
 - `DELIVERED` - Entregue
 - `CANCELLED` - Cancelado
 
 **Regras de negócio:**
-- Pedidos com status `DELIVERED` ou `CANCELLED` não podem ser alterados
+- Pedidos com status `DELIVERED` ou `CANCELLED` são considerados status finais e não podem ser alterados.
 - Pedidos com status `DELIVERED` não podem ser excluídos
-- Status não pode retroceder (ex: de `SHIPPED` para `PROCESSING`)
+- Status não pode retroceder (ex: de `DELIVERED` para `CANCELLED`)
 
 ## Arquitetura
 
@@ -200,7 +199,7 @@ Para executar os testes:
 - `br.com.prova.cotefacil.apipedidos.controllers` - Controllers REST
 - `br.com.prova.cotefacil.apipedidos.services` - Lógica de negócio
 - `br.com.prova.cotefacil.apipedidos.repositorys` - Acesso a dados
-- `br.com.prova.cotefacil.apipedidos.entitys` - Entidades JPA
+- `br.com.prova.cotefacil.apipedidos.entities` - Entidades JPA
 - `br.com.prova.cotefacil.apipedidos.dtos` - Data Transfer Objects
 - `br.com.prova.cotefacil.apipedidos.config` - Configurações
 - `br.com.prova.cotefacil.apipedidos.exceptions` - Exceções customizadas

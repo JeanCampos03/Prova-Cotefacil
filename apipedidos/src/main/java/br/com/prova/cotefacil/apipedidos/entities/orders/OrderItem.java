@@ -1,4 +1,4 @@
-package br.com.prova.cotefacil.apipedidos.entitys.orders;
+package br.com.prova.cotefacil.apipedidos.entities.orders;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

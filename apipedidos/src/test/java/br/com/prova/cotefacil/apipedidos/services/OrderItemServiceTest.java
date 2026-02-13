@@ -2,9 +2,9 @@ package br.com.prova.cotefacil.apipedidos.services;
 
 import br.com.prova.cotefacil.apipedidos.dtos.OrderItemDTO;
 import br.com.prova.cotefacil.apipedidos.dtos.OrderItemUpdateDTO;
-import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
-import br.com.prova.cotefacil.apipedidos.entitys.orders.Order;
-import br.com.prova.cotefacil.apipedidos.entitys.orders.OrderItem;
+import br.com.prova.cotefacil.apipedidos.entities.enums.OrderStatus;
+import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
+import br.com.prova.cotefacil.apipedidos.entities.orders.OrderItem;
 import br.com.prova.cotefacil.apipedidos.exceptions.NotFoundException;
 import br.com.prova.cotefacil.apipedidos.repositorys.OrderRepository;
 import br.com.prova.cotefacil.apipedidos.utils.SecurityUtils;

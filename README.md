@@ -13,27 +13,27 @@ API de autenticação e gateway que roteia requisições de pedidos para a pedid
 
 ### Execução Local
 
-1. **Configure o MySQL** - Crie o banco `cotefacil`
+1. **Para criar o banco `cotefacil`, na raiz do projeto, execute:** 
    ```bash
-   mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS cotefacil;"
+   docker-compose up --build
    ```
 
-2. **Configure o `application.properties`** com credenciais locais do seu banco:
+2. **Configure o `application.properties` de cada api caso não esteja configurada: ** com credenciais locais do seu banco:
    - `spring.datasource.username` - root
-   - `spring.datasource.password` - 1234
-   - `api2.url` - URL da API Pedidos (default: http://localhost:8082)
+   - `spring.datasource.password` - 0831
+   - `apigateway.url` - URL da API Pedidos (default: http://localhost:8082)
 
-3. **Execute a aplicação** (Em dois terminais diferentes, dentro do projeto):
+3. **Execute a aplicação** (Em dois terminais diferentes):
    ```bash
    Rodar API-Gateway
     A partir da pasta base:
-   cd api1
+   cd apigateway
     ./mvnw spring-boot:run
 
 
    Rodar API-Pedidos
    A partir da pasta base:
-    cd api2
+    cd apipedidos
     ./mvnw spring-boot:run
    ```
 
@@ -41,20 +41,20 @@ API de autenticação e gateway que roteia requisições de pedidos para a pedid
 
 ```bash
 A partir da pasta base:
-cd api1
+cd apigateway
 
-docker build -t api1-gateway .
+docker build -t apigateway .
 
 docker network create cotefacil-network
 
-docker run -d --name api1-gateway --network cotefacil-network -p 8080:8080 -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/cotefacil -e spring.datasource.username=root -e spring.datasource.password=1234 api1-gateway
+docker run -d --name apigateway --network cotefacil-network -p 8080:8080 -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/cotefacil -e spring.datasource.username=root -e spring.datasource.password=0831 apigateway
 
 A partir da pasta base:
-cd api2
+cd apipedidos
 
-docker build -t api2-pedidos .
+docker build -t apipedidos .
 
-docker run -d --name api2-pedidos --network cotefacil-network -p 8082:8082 -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/cotefacil -e spring.datasource.username=root -e spring.datasource.password=1234 api2-pedidos
+docker run -d --name apipedidos --network cotefacil-network -p 8082:8082 -e spring.datasource.url=jdbc:mysql://host.docker.internal:3306/cotefacil -e spring.datasource.username=root -e spring.datasource.password=0831 apipedidos
 ```
 
 ## Endpoints
@@ -93,14 +93,17 @@ Ou use o endpoint `/auth/register` para criar.
 
 - **Swagger UI:** http://localhost:8080/swagger-ui.html
 - **OpenAPI JSON:** http://localhost:8080/v3/api-docs
+- **Swagger UI:** http://localhost:8082/swagger-ui.html
+- **OpenAPI JSON:** http://localhost:8082/v3/api-docs
 
 ## Configurações
 
-| Variável | Descrição | Default |
-|----------|-----------|---------|
-| `JWT_SECRET` | Chave secreta para assinatura JWT | my-secret-key |
-| `API2_URL` | URL base da API Pedidos | http://localhost:8082 |
-| `spring.datasource.url` | URL do MySQL | jdbc:mysql://localhost:3306/cotefacil |
+| Variável                | Descrição                         | Default                               |
+|-------------------------|-----------------------------------|---------------------------------------|
+| `JWT_SECRET`            | Chave secreta para assinatura JWT | my-secret-key                         |
+| `apigateway_URL`        | URL base da API Gateway           | http://localhost:8080                 |
+| `apipedidos_URL`        | URL base da API Pedidos           | http://localhost:8082                 |
+| `spring.datasource.url` | URL do MySQL                      | jdbc:mysql://localhost:3306/cotefacil |
 
 ## Token JWT
 

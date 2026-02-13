@@ -1,7 +1,7 @@
 package br.com.prova.cotefacil.apigateway.config;
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
-import br.com.prova.cotefacil.apigateway.entity.UsuarioRole;
+import br.com.prova.cotefacil.apigateway.entities.Usuario;
+import br.com.prova.cotefacil.apigateway.entities.enums.UsuarioRole;
 import br.com.prova.cotefacil.apigateway.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

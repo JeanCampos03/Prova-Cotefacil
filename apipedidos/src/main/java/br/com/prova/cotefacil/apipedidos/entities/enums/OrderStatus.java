@@ -1,4 +1,4 @@
-package br.com.prova.cotefacil.apipedidos.entitys.enums;
+package br.com.prova.cotefacil.apipedidos.entities.enums;
 
 import java.util.List;
 

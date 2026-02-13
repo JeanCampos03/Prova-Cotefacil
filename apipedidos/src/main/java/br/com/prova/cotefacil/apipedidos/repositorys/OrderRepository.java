@@ -1,8 +1,7 @@
 package br.com.prova.cotefacil.apipedidos.repositorys;
 
-import br.com.prova.cotefacil.apigateway.entity.Usuario;
-import br.com.prova.cotefacil.apipedidos.entitys.enums.OrderStatus;
-import br.com.prova.cotefacil.apipedidos.entitys.orders.Order;
+import br.com.prova.cotefacil.apipedidos.entities.enums.OrderStatus;
+import br.com.prova.cotefacil.apipedidos.entities.orders.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
