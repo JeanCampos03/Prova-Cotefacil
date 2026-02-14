@@ -35,13 +35,13 @@ docker-compose up -d
 **Terminal 1 - API Gateway (porta 8080):**
 ```bash
 cd apigateway
-mvnw spring-boot:run
+./mvnw spring-boot:run
 ```
 
 **Terminal 2 - API Pedidos (porta 8082):**
 ```bash
 cd apipedidos
-mvnw spring-boot:run
+./mvnw spring-boot:run
 ```
 
 > **Nota para Windows**: Use `mvnw.cmd` ao invés de `./mvnw` se preferir, ou simplesmente `mvnw` que o terminal detectará automaticamente.
