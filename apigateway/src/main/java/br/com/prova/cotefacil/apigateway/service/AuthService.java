@@ -39,7 +39,7 @@ public class AuthService {
     }
 
     public LoginResponseDTO register(RegisteUserDTO dados) {
-        if (userService.existeUsuario(dados.username())) {
+        if (userService.ifExistsUser(dados.username())) {
             throw new UserAlreadyExistsException();
         }
 

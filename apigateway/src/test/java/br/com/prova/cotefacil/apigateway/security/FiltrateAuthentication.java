@@ -68,7 +68,7 @@ class FiltrateAuthentication {
         when(tokenService.validacaoToken(token))
                 .thenReturn(username);
 
-        when(userService.pegarUsuario(username))
+        when(userService.getUser(username))
                 .thenReturn(user);
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);

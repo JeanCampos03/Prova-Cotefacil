@@ -86,7 +86,7 @@ class AuthControllerTest {
 
     @Test
     void register_WithValidData_ReturnsToken() throws Exception {
-        when(userService.existeUsuario("novousuario")).thenReturn(false);
+        when(userService.ifExistsUser("novousuario")).thenReturn(false);
         when(tokenService.criarToken(any(User.class))).thenReturn("token-novo");
 
         RegisteUserDTO dto = new RegisteUserDTO("novousuario", "senha123");
@@ -103,7 +103,7 @@ class AuthControllerTest {
 
     @Test
     void register_WithExistingUser_Returns400() throws Exception {
-        when(userService.existeUsuario("existente")).thenReturn(true);
+        when(userService.ifExistsUser("existente")).thenReturn(true);
 
         RegisteUserDTO dto = new RegisteUserDTO("existente", "senha123");
 

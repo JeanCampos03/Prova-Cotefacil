@@ -1,4 +1,4 @@
-package br.com.prova.cotefacil.apigateway.config;
+package br.com.prova.cotefacil.apigateway.config.security;
 
 import br.com.prova.cotefacil.apigateway.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -69,8 +69,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "http://localhost:8080",  // API1 local
-                "http://api1:8080"        // API1 no Docker
+                "http://localhost:8080",
+                "http://api1:8080"
         ));
 
         config.setAllowedMethods(List.of(

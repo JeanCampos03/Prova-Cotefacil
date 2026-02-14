@@ -59,7 +59,7 @@ public class SecurityConfig {
                 "OPTIONS"
         ));
 
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of("http://localhost:8080"));
 
         config.setAllowCredentials(false);
 

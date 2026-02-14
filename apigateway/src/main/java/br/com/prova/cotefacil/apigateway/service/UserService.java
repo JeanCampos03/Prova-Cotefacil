@@ -17,7 +17,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
 
-    public boolean existeUsuario(String username) {
+    public boolean ifExistsUser(String username) {
         return userRepository.existsByUsername(username);
     }
 
@@ -27,25 +27,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
     }
 
-    // Retorna o usuário logado com base no JWT
-    public User getUsuarioLogado() {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
-            return null;
-        }
-
-        Object principal = auth.getPrincipal();
-        if (principal instanceof User user) {
-            return user;
-        } else if (principal instanceof UserDetails userDetails) {
-            return userRepository.findByUsername(userDetails.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-        }
-
-        return null;
-    }
-
-    public UserDetails pegarUsuario(String username) {
+    public UserDetails getUser(String username) {
         return loadUserByUsername(username);
     }
 
